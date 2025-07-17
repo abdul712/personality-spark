@@ -1,31 +1,19 @@
-# Use the official Node.js Alpine image for a lightweight container
+# Simple Node.js static server
 FROM node:20-alpine
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-
-# Install production dependencies
-# Using npm install instead of npm ci for flexibility
-RUN npm install --production
-
-# Copy the rest of the application files
+# Copy all files
 COPY . .
 
-# Create a non-root user to run the application
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001 -G nodejs
+# Install dependencies
+RUN npm install --production
 
-# Change ownership of the app directory to nodejs user
-RUN chown -R nodejs:nodejs /app
-
-# Switch to the nodejs user
-USER nodejs
-
-# Expose the port (Coolify will set PORT env variable)
+# Expose port - Coolify will handle the actual port binding
 EXPOSE 3000
+
+# Run as node user (already exists in node:alpine)
+USER node
 
 # Start the server
 CMD ["node", "server.js"]
