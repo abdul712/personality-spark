@@ -1,0 +1,24 @@
+{
+  "name": "personality-spark",
+  "version": "0.1.0",
+  "description": "Personality Spark - AI-powered personality discovery platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "personality",
+    "quiz",
+    "ai",
+    "assessment"
+  ],
+  "author": "Personality Spark Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
