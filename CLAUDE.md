@@ -61,7 +61,6 @@ Infrastructure:
 - Coolify (self-hosted PaaS)
 - Docker containers
 - Cloudflare CDN
-- GitHub Actions CI/CD
 - Sentry error tracking
 ```
 
@@ -225,11 +224,10 @@ CREATE TABLE quiz_analytics (
 
 ### Month 1: Foundation
 **Week 1-2: Setup & Infrastructure**
-- [ ] Initialize React Native project with Expo
-- [ ] Configure TypeScript and ESLint
+- [x] Initialize React Native project with Expo
+- [x] Configure TypeScript and ESLint
 - [ ] Set up Coolify server
-- [ ] Configure GitHub repository
-- [ ] Create CI/CD pipeline
+- [x] Configure GitHub repository
 
 **Week 3-4: Core Backend**
 - [ ] FastAPI project structure
@@ -583,8 +581,7 @@ Progress: 0%
 2. Integrate actual AI services (DeepSeek/OpenRouter)
 3. Implement Redis caching
 4. Add authentication with JWT
-5. Create GitHub Actions CI/CD pipeline
-6. Performance optimization and testing
+5. Performance optimization and testing
 
 ---
 
