@@ -7,15 +7,16 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install production dependencies only
-RUN npm ci --only=production
+# Install production dependencies
+# Using npm install instead of npm ci for flexibility
+RUN npm install --production
 
 # Copy the rest of the application files
 COPY . .
 
 # Create a non-root user to run the application
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nodejs -u 1001
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001 -G nodejs
 
 # Change ownership of the app directory to nodejs user
 RUN chown -R nodejs:nodejs /app
