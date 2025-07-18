@@ -11,9 +11,12 @@
 ### Workers
 - **Project Name**: personality-spark-api
 - **Worker Name**: personality-spark-api
+- **Worker URL**: https://personality-spark-api.mabdulrahim.workers.dev
 - **Environment**: production
-- **Routes**: [TO BE CONFIGURED WITH DOMAIN]
-- **Service Bindings**: D1, KV, R2
+- **Routes**: https://personality-spark-api.mabdulrahim.workers.dev/*
+- **Service Bindings**: AI, DB, CACHE, SESSIONS, STORAGE, RATE_LIMITER
+- **Version ID**: d493c33c-9ed4-42d2-9c6d-4789d7fe05f7
+- **Deployed**: 2025-07-18
 
 ### D1 Databases
 - **Database Name**: personality-spark-db
