@@ -71,10 +71,11 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: var(--border);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
   }
 }
 
@@ -197,12 +198,8 @@ html {
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Shadow utilities */
-.shadow-2xl {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-.shadow-purple-500\\/25 {
+/* Custom Shadow utilities */
+.shadow-purple {
   box-shadow: 0 25px 50px -12px rgba(168, 85, 247, 0.25);
 }
 

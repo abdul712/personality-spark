@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Share, Platform, Animated } from 'react-native';
+import { Icon } from '../components/ui/Icons';
+import { Button } from '../components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
+import { Badge } from '../components/ui/Badge';
 
 interface ResultScreenProps {
   navigation: {
@@ -27,11 +31,21 @@ interface QuizResult {
   strengths: string[];
   growthAreas: string[];
   careerMatches: string[];
+  compatibility: {
+    bestMatch: string;
+    description: string;
+  };
 }
 
 const ResultScreen: React.FC<ResultScreenProps> = ({ navigation, route }) => {
   const [result, setResult] = useState<QuizResult | null>(null);
   const [loading, setLoading] = useState(true);
+  const [selectedTab, setSelectedTab] = useState<'traits' | 'insights' | 'career'>('traits');
+  
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0.9)).current;
+  const slideAnim = useRef(new Animated.Value(50)).current;
+  const progressAnims = useRef(result?.traits.map(() => new Animated.Value(0)) || []).current;
 
   useEffect(() => {
     // Simulate loading results
@@ -63,10 +77,46 @@ const ResultScreen: React.FC<ResultScreenProps> = ({ navigation, route }) => {
           "Marketing Strategist",
           "User Experience Researcher",
           "Innovation Consultant"
-        ]
+        ],
+        compatibility: {
+          bestMatch: "The Strategic Architect",
+          description: "Your creative nature pairs well with structured thinkers who can help bring your ideas to life"
+        }
       };
       setResult(mockResult);
       setLoading(false);
+
+      // Animate in
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          tension: 20,
+          friction: 7,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+      ]).start();
+
+      // Animate trait bars
+      setTimeout(() => {
+        mockResult.traits.forEach((_, index) => {
+          Animated.timing(progressAnims[index], {
+            toValue: 1,
+            duration: 800,
+            delay: index * 100,
+            useNativeDriver: false,
+          }).start();
+        });
+      }, 400);
     }, 1500);
   }, []);
 
@@ -103,233 +153,288 @@ const ResultScreen: React.FC<ResultScreenProps> = ({ navigation, route }) => {
 
   if (loading || !result) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Analyzing your personality...</Text>
+      <View className="flex-1 justify-center items-center bg-white dark:bg-gray-900">
+        <View className="items-center">
+          <View className="w-24 h-24 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center mb-6">
+            <Icon name="cpu" size={40} color="#9333ea" />
+          </View>
+          <Text className="text-2xl text-gray-800 dark:text-gray-200 font-semibold mb-2">
+            Analyzing your personality...
+          </Text>
+          <Text className="text-base text-gray-500 dark:text-gray-400">
+            Our AI is creating your unique profile
+          </Text>
+        </View>
       </View>
     );
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}>
-        <Text style={styles.personalityType}>{result.personalityType}</Text>
-        <Text style={styles.title}>{result.title}</Text>
-        <Text style={styles.description}>{result.description}</Text>
-      </View>
-
-      <View style={styles.traitsSection}>
-        <Text style={styles.sectionTitle}>Your Personality Traits</Text>
-        {result.traits.map((trait, index) => (
-          <View key={index} style={styles.traitContainer}>
-            <View style={styles.traitHeader}>
-              <Text style={styles.traitName}>{trait.name}</Text>
-              <Text style={styles.traitScore}>{trait.score}%</Text>
-            </View>
-            <View style={styles.traitBarContainer}>
-              <View 
-                style={[
-                  styles.traitBar, 
-                  { width: `${trait.score}%`, backgroundColor: trait.color }
-                ]} 
-              />
-            </View>
-            <Text style={styles.traitDescription}>{trait.description}</Text>
+    <ScrollView className="flex-1 bg-gray-50 dark:bg-gray-900" showsVerticalScrollIndicator={false}>
+      {/* Hero Section with Gradient */}
+      <Animated.View 
+        className="relative"
+        style={{
+          opacity: fadeAnim,
+          transform: [{ scale: scaleAnim }]
+        }}
+      >
+        <View className="bg-gradient-to-br from-purple-600 via-pink-600 to-blue-600 px-6 pt-12 pb-24 relative overflow-hidden">
+          {/* Background decoration */}
+          <View className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
+          <View className="absolute bottom-0 left-0 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
+          
+          <View className="relative z-10">
+            <Badge variant="secondary" className="bg-white/20 mb-4">
+              <Icon name="star" size={14} color="white" />
+              <Text className="ml-1 text-white font-semibold">AI Analysis Complete</Text>
+            </Badge>
+            
+            <Text className="text-4xl font-bold text-white mb-3">
+              {result.personalityType}
+            </Text>
+            <Text className="text-xl text-white/90 leading-relaxed">
+              {result.description}
+            </Text>
           </View>
-        ))}
+        </View>
+
+        {/* Floating Stats Cards */}
+        <View className="px-6 -mt-12 mb-6">
+          <View className="flex-row justify-between">
+            <Card className="flex-1 mr-2 bg-white dark:bg-gray-800 shadow-xl">
+              <CardContent className="p-4 items-center">
+                <Text className="text-3xl font-bold text-purple-600 dark:text-purple-400">
+                  {result.traits[0].score}%
+                </Text>
+                <Text className="text-xs text-gray-600 dark:text-gray-400 mt-1">Top Trait</Text>
+              </CardContent>
+            </Card>
+            <Card className="flex-1 mx-2 bg-white dark:bg-gray-800 shadow-xl">
+              <CardContent className="p-4 items-center">
+                <Text className="text-3xl font-bold text-pink-600 dark:text-pink-400">
+                  {result.strengths.length}
+                </Text>
+                <Text className="text-xs text-gray-600 dark:text-gray-400 mt-1">Key Strengths</Text>
+              </CardContent>
+            </Card>
+            <Card className="flex-1 ml-2 bg-white dark:bg-gray-800 shadow-xl">
+              <CardContent className="p-4 items-center">
+                <Text className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+                  95%
+                </Text>
+                <Text className="text-xs text-gray-600 dark:text-gray-400 mt-1">Match Score</Text>
+              </CardContent>
+            </Card>
+          </View>
+        </View>
+      </Animated.View>
+
+      {/* Tabs */}
+      <View className="px-6 mb-6">
+        <View className="flex-row bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
+          {(['traits', 'insights', 'career'] as const).map((tab) => (
+            <TouchableOpacity
+              key={tab}
+              onPress={() => setSelectedTab(tab)}
+              className={`flex-1 py-3 rounded-lg ${
+                selectedTab === tab ? 'bg-white dark:bg-gray-700 shadow-sm' : ''
+              }`}
+            >
+              <Text className={`text-center font-semibold ${
+                selectedTab === tab 
+                  ? 'text-purple-600 dark:text-purple-400' 
+                  : 'text-gray-600 dark:text-gray-400'
+              }`}>
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
 
-      <View style={styles.insightsSection}>
-        <View style={styles.insightCard}>
-          <Text style={styles.insightTitle}>💪 Your Strengths</Text>
-          {result.strengths.map((strength, index) => (
-            <Text key={index} style={styles.insightItem}>• {strength}</Text>
-          ))}
-        </View>
+      {/* Tab Content */}
+      <Animated.View 
+        className="px-6 pb-10"
+        style={{
+          opacity: fadeAnim,
+          transform: [{ translateY: slideAnim }]
+        }}
+      >
+        {selectedTab === 'traits' && (
+          <View>
+            {result.traits.map((trait, index) => (
+              <Card key={index} className="mb-4 bg-white dark:bg-gray-800">
+                <CardContent className="p-6">
+                  <View className="flex-row justify-between items-center mb-3">
+                    <View className="flex-row items-center">
+                      <View 
+                        className="w-12 h-12 rounded-full mr-3 flex items-center justify-center"
+                        style={{ backgroundColor: `${trait.color}20` }}
+                      >
+                        <Icon name="trending-up" size={20} color={trait.color} />
+                      </View>
+                      <View>
+                        <Text className="text-lg font-bold text-gray-900 dark:text-white">
+                          {trait.name}
+                        </Text>
+                        <Text className="text-sm text-gray-500 dark:text-gray-400">
+                          {trait.description}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text className="text-2xl font-bold" style={{ color: trait.color }}>
+                      {trait.score}%
+                    </Text>
+                  </View>
+                  
+                  <View className="h-3 bg-gray-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                    <Animated.View 
+                      className="h-full rounded-full"
+                      style={{
+                        backgroundColor: trait.color,
+                        width: progressAnims[index]?.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: ['0%', `${trait.score}%`]
+                        }) || '0%'
+                      }}
+                    />
+                  </View>
+                </CardContent>
+              </Card>
+            ))}
+          </View>
+        )}
 
-        <View style={styles.insightCard}>
-          <Text style={styles.insightTitle}>🌱 Growth Areas</Text>
-          {result.growthAreas.map((area, index) => (
-            <Text key={index} style={styles.insightItem}>• {area}</Text>
-          ))}
-        </View>
+        {selectedTab === 'insights' && (
+          <View>
+            <Card className="mb-4 bg-white dark:bg-gray-800">
+              <CardHeader>
+                <CardTitle>
+                  <View className="flex-row items-center">
+                    <Icon name="star" size={20} color="#10b981" />
+                    <Text className="ml-2 text-xl font-bold text-gray-900 dark:text-white">
+                      Your Strengths
+                    </Text>
+                  </View>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {result.strengths.map((strength, index) => (
+                  <View key={index} className="flex-row items-center mb-3">
+                    <View className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                    <Text className="text-base text-gray-700 dark:text-gray-200">
+                      {strength}
+                    </Text>
+                  </View>
+                ))}
+              </CardContent>
+            </Card>
 
-        <View style={styles.insightCard}>
-          <Text style={styles.insightTitle}>💼 Career Matches</Text>
-          {result.careerMatches.map((career, index) => (
-            <Text key={index} style={styles.insightItem}>• {career}</Text>
-          ))}
-        </View>
-      </View>
+            <Card className="mb-4 bg-white dark:bg-gray-800">
+              <CardHeader>
+                <CardTitle>
+                  <View className="flex-row items-center">
+                    <Icon name="trending-up" size={20} color="#f59e0b" />
+                    <Text className="ml-2 text-xl font-bold text-gray-900 dark:text-white">
+                      Growth Opportunities
+                    </Text>
+                  </View>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {result.growthAreas.map((area, index) => (
+                  <View key={index} className="flex-row items-center mb-3">
+                    <View className="w-2 h-2 bg-amber-500 rounded-full mr-3" />
+                    <Text className="text-base text-gray-700 dark:text-gray-200">
+                      {area}
+                    </Text>
+                  </View>
+                ))}
+              </CardContent>
+            </Card>
 
-      <View style={styles.actionSection}>
-        <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
-          <Text style={styles.shareButtonText}>Share Your Results 📤</Text>
-        </TouchableOpacity>
+            <Card className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20">
+              <CardHeader>
+                <CardTitle>
+                  <View className="flex-row items-center">
+                    <Icon name="heart" size={20} color="#ec4899" />
+                    <Text className="ml-2 text-xl font-bold text-gray-900 dark:text-white">
+                      Best Compatibility
+                    </Text>
+                  </View>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Text className="text-lg font-semibold text-purple-700 dark:text-purple-300 mb-2">
+                  {result.compatibility.bestMatch}
+                </Text>
+                <Text className="text-base text-gray-600 dark:text-gray-300">
+                  {result.compatibility.description}
+                </Text>
+              </CardContent>
+            </Card>
+          </View>
+        )}
+
+        {selectedTab === 'career' && (
+          <View>
+            <Card className="bg-white dark:bg-gray-800">
+              <CardHeader>
+                <CardTitle>
+                  <View className="flex-row items-center">
+                    <Icon name="shield" size={20} color="#3b82f6" />
+                    <Text className="ml-2 text-xl font-bold text-gray-900 dark:text-white">
+                      Ideal Career Paths
+                    </Text>
+                  </View>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Text className="text-base text-gray-600 dark:text-gray-300 mb-4">
+                  Based on your personality profile, these careers align perfectly with your strengths:
+                </Text>
+                {result.careerMatches.map((career, index) => (
+                  <View key={index} className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-4 mb-3">
+                    <Text className="text-base font-semibold text-gray-800 dark:text-gray-200">
+                      {career}
+                    </Text>
+                  </View>
+                ))}
+              </CardContent>
+            </Card>
+          </View>
+        )}
+      </Animated.View>
+
+      {/* Action Buttons */}
+      <View className="px-6 pb-10">
+        <Button
+          size="lg"
+          className="mb-3 shadow-xl"
+          onPress={handleShare}
+        >
+          <Icon name="share-2" size={20} color="white" />
+          <Text className="ml-2 text-white font-bold">Share Your Results</Text>
+        </Button>
         
-        <TouchableOpacity style={styles.retakeButton} onPress={handleRetakeQuiz}>
-          <Text style={styles.retakeButtonText}>Take Another Quiz</Text>
-        </TouchableOpacity>
-      </View>
+        <Button
+          variant="outline"
+          size="lg"
+          onPress={handleRetakeQuiz}
+        >
+          <Icon name="refresh-cw" size={20} color="#9333ea" />
+          <Text className="ml-2 text-purple-600 dark:text-purple-400 font-bold">
+            Take Another Quiz
+          </Text>
+        </Button>
 
-      <View style={styles.disclaimer}>
-        <Text style={styles.disclaimerText}>
+        <Text className="text-xs text-gray-500 dark:text-gray-400 text-center mt-6 italic">
           Your results are based on AI analysis and should be viewed as insights rather than definitive assessments.
         </Text>
       </View>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 18,
-    color: '#4A5568',
-  },
-  header: {
-    padding: 30,
-    backgroundColor: 'white',
-    alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  personalityType: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#6B46C1',
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#1A202C',
-    marginBottom: 10,
-  },
-  description: {
-    fontSize: 16,
-    color: '#4A5568',
-    textAlign: 'center',
-    lineHeight: 24,
-    maxWidth: 500,
-  },
-  traitsSection: {
-    padding: 20,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1A202C',
-    marginBottom: 20,
-  },
-  traitContainer: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 15,
-  },
-  traitHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  traitName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2D3748',
-  },
-  traitScore: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#6B46C1',
-  },
-  traitBarContainer: {
-    height: 8,
-    backgroundColor: '#E2E8F0',
-    borderRadius: 4,
-    marginBottom: 8,
-  },
-  traitBar: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  traitDescription: {
-    fontSize: 14,
-    color: '#4A5568',
-  },
-  insightsSection: {
-    padding: 20,
-  },
-  insightCard: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 12,
-    marginBottom: 15,
-  },
-  insightTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1A202C',
-    marginBottom: 15,
-  },
-  insightItem: {
-    fontSize: 16,
-    color: '#4A5568',
-    marginBottom: 8,
-    lineHeight: 22,
-  },
-  actionSection: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  shareButton: {
-    backgroundColor: '#6B46C1',
-    paddingHorizontal: 40,
-    paddingVertical: 18,
-    borderRadius: 30,
-    marginBottom: 15,
-    width: '100%',
-    maxWidth: 300,
-  },
-  shareButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  retakeButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#6B46C1',
-    paddingHorizontal: 40,
-    paddingVertical: 16,
-    borderRadius: 30,
-    width: '100%',
-    maxWidth: 300,
-  },
-  retakeButtonText: {
-    color: '#6B46C1',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  disclaimer: {
-    padding: 20,
-    marginBottom: 30,
-  },
-  disclaimerText: {
-    fontSize: 12,
-    color: '#718096',
-    textAlign: 'center',
-    fontStyle: 'italic',
-  },
-});
 
 export default ResultScreen;

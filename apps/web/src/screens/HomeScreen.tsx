@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Animated, Dimensions } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import { Icon } from '../components/ui/Icons';
 import Footer from '../components/Footer';
-import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
-import Badge from '../components/ui/Badge';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
+import { Badge } from '../components/ui/Badge';
 
 interface HomeScreenProps {
   navigation: {

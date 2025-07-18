@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Animated, Dimensions } from 'react-native';
+import { Icon } from '../components/ui/Icons';
+import { Button } from '../components/ui/Button';
+import { Card } from '../components/ui/Card';
 
 interface QuizScreenProps {
   navigation: {
@@ -23,6 +26,8 @@ interface Question {
   }[];
 }
 
+const { width } = Dimensions.get('window');
+
 const QuizScreen: React.FC<QuizScreenProps> = ({ navigation, route }) => {
   const { quizType } = route.params;
 
@@ -30,7 +35,12 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ navigation, route }) => {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
-  const progressAnim = useState(new Animated.Value(0))[0];
+  const [transitioning, setTransitioning] = useState(false);
+  
+  const progressAnim = useRef(new Animated.Value(0)).current;
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(50)).current;
+  const scaleAnim = useRef(new Animated.Value(0.9)).current;
 
   useEffect(() => {
     // Simulate loading quiz questions
@@ -90,6 +100,26 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ navigation, route }) => {
       ];
       setQuestions(mockQuestions);
       setLoading(false);
+
+      // Animate in
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 600,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 500,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          tension: 20,
+          friction: 7,
+          useNativeDriver: true,
+        }),
+      ]).start();
     }, 1000);
   }, [quizType]);
 
@@ -102,28 +132,77 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ navigation, route }) => {
     }).start();
   }, [currentQuestion, questions.length]);
 
+  const animateTransition = (callback: () => void) => {
+    setTransitioning(true);
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: -30,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      callback();
+      slideAnim.setValue(30);
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start(() => setTransitioning(false));
+    });
+  };
+
   const handleAnswer = (value: string) => {
     const newAnswers = { ...answers, [currentQuestion]: value };
     setAnswers(newAnswers);
 
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      // Quiz completed - navigate to results
-      navigation.navigate('Result', { resultId: 'mock-result-id' });
-    }
+    setTimeout(() => {
+      if (currentQuestion < questions.length - 1) {
+        animateTransition(() => setCurrentQuestion(currentQuestion + 1));
+      } else {
+        // Quiz completed - navigate to results
+        Animated.timing(fadeAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(() => {
+          navigation.navigate('Result', { resultId: 'mock-result-id' });
+        });
+      }
+    }, 300);
   };
 
   const handleBack = () => {
     if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
+      animateTransition(() => setCurrentQuestion(currentQuestion - 1));
     }
   };
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Preparing your personalized quiz...</Text>
+      <View className="flex-1 justify-center items-center bg-white dark:bg-gray-900">
+        <View className="items-center">
+          <View className="w-20 h-20 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center mb-4">
+            <Icon name="cpu" size={32} color="#9333ea" />
+          </View>
+          <Text className="text-xl text-gray-800 dark:text-gray-200 font-semibold">
+            Preparing your personalized quiz...
+          </Text>
+          <Text className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+            Our AI is crafting questions just for you
+          </Text>
+        </View>
       </View>
     );
   }
@@ -132,142 +211,167 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ navigation, route }) => {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (
-    <View style={styles.container}>
-      <View style={styles.progressContainer}>
-        <View style={styles.progressBar}>
+    <View className="flex-1 bg-gray-50 dark:bg-gray-900">
+      {/* Progress Header */}
+      <View className="bg-white dark:bg-gray-800 px-6 py-4 shadow-sm">
+        <View className="flex-row justify-between items-center mb-3">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="p-2"
+          >
+            <Icon name="arrow-left" size={24} color="#6b7280" />
+          </TouchableOpacity>
+          <Text className="text-sm font-semibold text-gray-600 dark:text-gray-300">
+            Question {currentQuestion + 1} of {questions.length}
+          </Text>
+          <View className="w-10" />
+        </View>
+        
+        {/* Progress Bar */}
+        <View className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
           <Animated.View 
-            style={[
-              styles.progressFill, 
-              { 
-                width: progressAnim.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: ['0%', '100%']
-                })
-              }
-            ]} 
+            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full"
+            style={{
+              width: progressAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['0%', '100%']
+              })
+            }}
           />
         </View>
-        <Text style={styles.progressText}>
-          Question {currentQuestion + 1} of {questions.length}
-        </Text>
       </View>
 
-      <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
-        <Text style={styles.questionText}>{question.text}</Text>
-
-        <View style={styles.optionsContainer}>
-          {question.options.map((option, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.optionButton,
-                answers[currentQuestion] === option.value && styles.selectedOption
-              ]}
-              onPress={() => handleAnswer(option.value)}
-              activeOpacity={0.8}
-            >
-              <Text style={[
-                styles.optionText,
-                answers[currentQuestion] === option.value && styles.selectedOptionText
-              ]}>
-                {option.text}
+      <ScrollView 
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
+        <Animated.View
+          style={{
+            opacity: fadeAnim,
+            transform: [
+              { translateY: slideAnim },
+              { scale: scaleAnim }
+            ]
+          }}
+          className="px-6 pt-8"
+        >
+          {/* Question Card */}
+          <Card className="p-8 bg-white dark:bg-gray-800 mb-8 shadow-xl">
+            <View className="flex-row items-start mb-4">
+              <View className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mr-4">
+                <Text className="text-purple-600 dark:text-purple-400 font-bold">
+                  {currentQuestion + 1}
+                </Text>
+              </View>
+              <Text className="flex-1 text-2xl font-bold text-gray-900 dark:text-white leading-tight">
+                {question.text}
               </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+            </View>
+            
+            <Text className="text-sm text-gray-500 dark:text-gray-400 ml-14">
+              Select the option that best describes you
+            </Text>
+          </Card>
 
-        {currentQuestion > 0 && (
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Text style={styles.backButtonText}>← Previous Question</Text>
-          </TouchableOpacity>
-        )}
+          {/* Options */}
+          <View className="mb-8">
+            {question.options.map((option, index) => {
+              const isSelected = answers[currentQuestion] === option.value;
+              const animDelay = index * 50;
+              
+              return (
+                <Animated.View
+                  key={index}
+                  style={{
+                    opacity: fadeAnim,
+                    transform: [{
+                      translateY: slideAnim.interpolate({
+                        inputRange: [0, 30],
+                        outputRange: [0, 30 + animDelay / 10]
+                      })
+                    }]
+                  }}
+                  className="mb-3"
+                >
+                  <TouchableOpacity
+                    onPress={() => !transitioning && handleAnswer(option.value)}
+                    activeOpacity={0.8}
+                    disabled={transitioning}
+                  >
+                    <Card 
+                      className={`p-6 ${
+                        isSelected 
+                          ? 'bg-purple-50 dark:bg-purple-900/20 border-2 border-purple-500' 
+                          : 'bg-white dark:bg-gray-800 border-2 border-transparent'
+                      } transition-all`}
+                    >
+                      <View className="flex-row items-center">
+                        <View className={`w-6 h-6 rounded-full border-2 mr-4 flex items-center justify-center ${
+                          isSelected
+                            ? 'border-purple-500 bg-purple-500'
+                            : 'border-gray-300 dark:border-gray-600'
+                        }`}>
+                          {isSelected && (
+                            <Icon name="check" size={14} color="white" />
+                          )}
+                        </View>
+                        <Text className={`flex-1 text-base ${
+                          isSelected
+                            ? 'text-purple-700 dark:text-purple-300 font-semibold'
+                            : 'text-gray-700 dark:text-gray-200'
+                        }`}>
+                          {option.text}
+                        </Text>
+                      </View>
+                    </Card>
+                  </TouchableOpacity>
+                </Animated.View>
+              );
+            })}
+          </View>
+        </Animated.View>
       </ScrollView>
+
+      {/* Navigation Buttons */}
+      <View className="absolute bottom-0 left-0 right-0 bg-white dark:bg-gray-800 px-6 py-4 shadow-2xl">
+        <View className="flex-row justify-between items-center">
+          {currentQuestion > 0 ? (
+            <Button
+              variant="outline"
+              onPress={handleBack}
+              disabled={transitioning}
+              className="flex-1 mr-2"
+            >
+              <Icon name="arrow-left" size={18} color="#6b7280" />
+              <Text className="ml-2 text-gray-600 dark:text-gray-300 font-semibold">
+                Previous
+              </Text>
+            </Button>
+          ) : (
+            <View className="flex-1 mr-2" />
+          )}
+          
+          <Button
+            variant="gradient"
+            disabled={!answers[currentQuestion] || transitioning}
+            className="flex-1 ml-2"
+            onPress={() => {
+              // Skip button functionality
+              if (currentQuestion < questions.length - 1) {
+                animateTransition(() => setCurrentQuestion(currentQuestion + 1));
+              }
+            }}
+          >
+            <Text className="text-white font-semibold">
+              {currentQuestion === questions.length - 1 ? 'Complete' : 'Skip'}
+            </Text>
+            <Icon name="arrow-right" size={18} color="white" />
+          </Button>
+        </View>
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FAFAFA',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    fontSize: 18,
-    color: '#4A5568',
-  },
-  progressContainer: {
-    padding: 20,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: '#E2E8F0',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#6B46C1',
-    borderRadius: 4,
-  },
-  progressText: {
-    marginTop: 10,
-    fontSize: 14,
-    color: '#4A5568',
-    textAlign: 'center',
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 20,
-  },
-  questionText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1A202C',
-    marginBottom: 30,
-    marginTop: 20,
-    lineHeight: 32,
-  },
-  optionsContainer: {
-    marginBottom: 30,
-  },
-  optionButton: {
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#E2E8F0',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 15,
-  },
-  selectedOption: {
-    borderColor: '#6B46C1',
-    backgroundColor: '#F3F0FF',
-  },
-  optionText: {
-    fontSize: 16,
-    color: '#2D3748',
-    lineHeight: 22,
-  },
-  selectedOptionText: {
-    color: '#6B46C1',
-    fontWeight: '600',
-  },
-  backButton: {
-    alignSelf: 'center',
-    padding: 15,
-  },
-  backButtonText: {
-    color: '#6B46C1',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-});
 
 export default QuizScreen;

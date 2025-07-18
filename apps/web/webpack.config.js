@@ -14,7 +14,8 @@ module.exports = {
     extensions: ['.web.tsx', '.web.ts', '.web.js', '.web.jsx', '.tsx', '.ts', '.js', '.jsx'],
     alias: {
       'react-native$': 'react-native-web',
-      '@': path.resolve(__dirname, 'src')
+      '@': path.resolve(__dirname, 'src'),
+      'react-native-vector-icons': '@expo/vector-icons'
     },
     fallback: {
       "crypto": false,
@@ -59,6 +60,11 @@ module.exports = {
       {
         test: /\.(png|jpe?g|gif|svg)$/,
         use: ['file-loader']
+      },
+      {
+        test: /\.ttf$/,
+        loader: 'file-loader',
+        include: /node_modules\/react-native-vector-icons/,
       }
     ]
   },

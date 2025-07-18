@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import { Icon } from './ui/Icons';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
