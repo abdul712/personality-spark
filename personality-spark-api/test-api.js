@@ -135,7 +135,7 @@ async function testGetCategories() {
 async function testGenerateQuiz() {
   const response = await makeRequest('GET', `${API_PREFIX}/quizzes/generate/personality`);
   
-  if (response.status === 200 && response.body.quiz_id && response.body.questions) {
+  if (response.status === 200 && response.body.id && response.body.questions) {
     testData.quizData = response.body;
     return { success: true, message: `Generated quiz with ${response.body.questions.length} questions` };
   }
@@ -146,7 +146,7 @@ async function testGenerateQuiz() {
 async function testGetDailyQuiz() {
   const response = await makeRequest('GET', `${API_PREFIX}/quizzes/daily`);
   
-  if (response.status === 200 && response.body.quiz_id) {
+  if (response.status === 200 && response.body.id) {
     return { success: true, message: 'Retrieved daily quiz successfully' };
   }
   
@@ -160,11 +160,12 @@ async function testSubmitQuiz() {
 
   const answers = testData.quizData.questions.map((q, idx) => ({
     question_id: idx + 1,
-    answer: q.options[0].value
+    answer: q.options[0].value,
+    selected_option: 0  // Select first option (index 0)
   }));
 
   const response = await makeRequest('POST', `${API_PREFIX}/quizzes/submit`, {
-    quiz_id: testData.quizData.quiz_id,
+    quiz_id: testData.quizData.id,
     answers: answers
   });
   
@@ -192,8 +193,8 @@ async function testGetResult() {
 
 async function testAIGenerateQuiz() {
   const response = await makeRequest('POST', `${API_PREFIX}/ai/generate-quiz`, {
-    quiz_type: 'personality',
-    num_questions: 5,
+    type: 'personality',
+    numQuestions: 5,
     theme: 'work-life balance',
     difficulty: 'medium'
   });
@@ -208,9 +209,10 @@ async function testAIGenerateQuiz() {
 async function testAIAnalyzePersonality() {
   const response = await makeRequest('POST', `${API_PREFIX}/ai/analyze-personality`, {
     responses: [
-      { question: 'How do you handle stress?', answer: 'I take deep breaths and plan my approach' },
-      { question: 'What motivates you?', answer: 'Personal growth and learning' }
-    ]
+      { questionId: 1, question: 'How do you handle stress?', answer: 'I take deep breaths and plan my approach' },
+      { questionId: 2, question: 'What motivates you?', answer: 'Personal growth and learning' }
+    ],
+    quizType: 'personality'
   });
   
   if (response.status === 200 && response.body.analysis) {
@@ -222,8 +224,8 @@ async function testAIAnalyzePersonality() {
 
 async function testAIGenerateInsights() {
   const response = await makeRequest('POST', `${API_PREFIX}/ai/generate-insights`, {
-    personality_type: 'INTJ',
-    traits: {
+    primaryType: 'INTJ',
+    personalityTraits: {
       openness: 0.8,
       conscientiousness: 0.9,
       extraversion: 0.3,
@@ -232,7 +234,7 @@ async function testAIGenerateInsights() {
     }
   });
   
-  if (response.status === 200 && response.body.insights) {
+  if (response.status === 200 && response.body.key_insights) {
     return { success: true, message: 'AI insights generated successfully' };
   }
   
@@ -290,12 +292,13 @@ async function testCreateChallenge() {
 }
 
 async function testUserRegister() {
-  const randomEmail = `test${Date.now()}@example.com`;
+  const timestamp = Date.now().toString().slice(-8);
+  const randomEmail = `test${timestamp}@example.com`;
   
   const response = await makeRequest('POST', `${API_PREFIX}/user/register`, {
     email: randomEmail,
     password: 'TestPassword123!',
-    username: `testuser${Date.now()}`
+    username: `user${timestamp}`
   });
   
   if (response.status === 201 && response.body.user_id) {
