@@ -1,5 +1,6 @@
 // Use REACT_APP_ prefix for Create React App compatibility or __ENV for webpack DefinePlugin
-const API_BASE_URL = process.env.REACT_APP_API_URL || process.env.API_URL || 'http://localhost:8000/api/v1';
+// For integrated deployment, API is on same domain at /api/v1
+const API_BASE_URL = process.env.REACT_APP_API_URL || process.env.API_URL || '/api/v1';
 
 export interface QuizCategory {
   id: string;

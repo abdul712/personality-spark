@@ -5,7 +5,7 @@ const http = require('http');
 const { URL } = require('url');
 
 // Configuration
-const BASE_URL = process.env.API_BASE_URL || 'https://personality-spark-api.workers.dev';
+const BASE_URL = process.env.API_BASE_URL || 'https://personality-spark-api.mabdulrahim.workers.dev';
 const API_PREFIX = '/api/v1';
 
 // Colors for console output

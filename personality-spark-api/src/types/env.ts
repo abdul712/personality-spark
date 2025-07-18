@@ -15,6 +15,9 @@ export interface Env {
   // Durable Objects
   RATE_LIMITER: DurableObjectNamespace;
   
+  // Static Assets
+  ASSETS: Fetcher;
+  
   // Environment Variables
   ENVIRONMENT: string;
   JWT_SECRET: string;

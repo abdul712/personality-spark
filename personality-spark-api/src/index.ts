@@ -25,7 +25,9 @@ const app = new Hono<Context>();
 // Global middleware
 app.use('*', logger());
 app.use('*', timing());
-app.use('*', compress());
+app.use('*', compress({
+  encoding: 'gzip'
+}));
 app.use('*', etag());
 app.use('*', secureHeaders());
 
@@ -69,12 +71,20 @@ app.route('/api/v1/share', shareRouter);
 app.route('/api/v1/user', userRouter);
 app.route('/api/v1/analytics', analyticsRouter);
 
-// 404 handler
-app.notFound((c) => {
-  return c.json({
-    error: 'Not Found',
-    message: 'The requested endpoint does not exist',
-  }, 404);
+// Serve static files for non-API routes using ASSETS binding
+app.get('*', async (c) => {
+  const url = new URL(c.req.url);
+  
+  // Skip API routes
+  if (url.pathname.startsWith('/api/')) {
+    return c.json({
+      error: 'Not Found',
+      message: 'The requested endpoint does not exist',
+    }, 404);
+  }
+  
+  // Serve static assets
+  return c.env.ASSETS.fetch(c.req.raw);
 });
 
 export default app;
