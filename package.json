@@ -8,7 +8,7 @@
     "dev": "cd personality-spark-api && npm run dev",
     "build": "cd personality-spark-api && npm install && cd ../apps/web && npm install && npm run build && cd ../.. && rm -rf personality-spark-api/public/* && cp -r apps/web/dist/* personality-spark-api/public/",
     "postinstall": "cd personality-spark-api && npm install",
-    "deploy": "npm run build && npx wrangler deploy",
+    "deploy": "./deploy.sh",
     "install:all": "npm install && cd apps/web && npm install && cd ../../personality-spark-api && npm install"
   },
   "keywords": [
