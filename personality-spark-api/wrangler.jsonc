@@ -75,9 +75,6 @@
 	
 	// Environment variables
 	"vars": {
-		"ENVIRONMENT": "development",
-		"JWT_SECRET": "your-jwt-secret-here",
-		"DEEPSEEK_API_KEY": "",
-		"OPENROUTER_API_KEY": ""
+		"ENVIRONMENT": "production"
 	}
 }
