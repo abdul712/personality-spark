@@ -1,0 +1,28 @@
+{
+	"name": "personality-spark-api",
+	"version": "1.0.0",
+	"private": true,
+	"description": "Cloudflare Workers API for Personality Spark",
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest",
+		"test:watch": "vitest --watch",
+		"cf-typegen": "wrangler types",
+		"db:migrate": "wrangler d1 execute personality-spark --local --file=./migrations/0001_initial_schema.sql",
+		"db:migrate:prod": "wrangler d1 execute personality-spark --file=./migrations/0001_initial_schema.sql"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.8.19",
+		"@cloudflare/workers-types": "^4.20250718.0",
+		"typescript": "^5.5.2",
+		"vitest": "~3.2.0",
+		"wrangler": "^4.25.0"
+	},
+	"dependencies": {
+		"@hono/zod-validator": "^0.7.1",
+		"hono": "^4.8.5",
+		"zod": "^4.0.5"
+	}
+}

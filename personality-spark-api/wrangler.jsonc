@@ -1,0 +1,77 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "personality-spark-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-07-18",
+	"compatibility_flags": [
+		"global_fetch_strictly_public"
+	],
+	"assets": {
+		"directory": "./public"
+	},
+	"observability": {
+		"enabled": true
+	},
+	
+	/**
+	 * Bindings
+	 */
+	
+	// Workers AI for quiz generation
+	"ai": {
+		"binding": "AI"
+	},
+	
+	// D1 Database for user accounts and quiz results
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "personality-spark",
+			"database_id": "YOUR_D1_DATABASE_ID"
+		}
+	],
+	
+	// KV for caching and sessions
+	"kv_namespaces": [
+		{
+			"binding": "CACHE",
+			"id": "YOUR_KV_NAMESPACE_ID",
+			"preview_id": "YOUR_KV_PREVIEW_ID"
+		},
+		{
+			"binding": "SESSIONS",
+			"id": "YOUR_SESSIONS_KV_ID",
+			"preview_id": "YOUR_SESSIONS_PREVIEW_ID"
+		}
+	],
+	
+	// R2 for file storage (share cards, etc)
+	"r2_buckets": [
+		{
+			"binding": "STORAGE",
+			"bucket_name": "personality-spark-storage"
+		}
+	],
+	
+	// Rate limiting using Durable Objects
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "RATE_LIMITER",
+				"class_name": "RateLimiter"
+			}
+		]
+	},
+	
+	// Environment variables
+	"vars": {
+		"ENVIRONMENT": "development",
+		"JWT_SECRET": "your-jwt-secret-here",
+		"DEEPSEEK_API_KEY": "",
+		"OPENROUTER_API_KEY": ""
+	}
+}

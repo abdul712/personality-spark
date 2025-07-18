@@ -583,7 +583,33 @@ Progress: 0%
 4. Add authentication with JWT
 5. Performance optimization and testing
 
+## 🚀 Cloudflare Deployment Instructions
+
+### Important: GitHub Auto-Deployment
+- **Cloudflare has built-in GitHub connectivity** - pushing code to the repo automatically deploys to Cloudflare
+- **Use wrangler only for initial resource creation**, not for deployments
+- **After initial setup, use `git push` to deploy changes**
+- **DO NOT use `wrangler deploy` for regular deployments**
+
+### Deployment Workflow
+1. Make code changes locally
+2. Test changes
+3. Commit and push to GitHub: `git push origin main`
+4. Cloudflare automatically builds and deploys
+5. Monitor deployment in Cloudflare dashboard
+
+### Resource Tracking
+- All Cloudflare resources are tracked in `clod.md`
+- Reference `clod.md` for all resource IDs and configurations
+- Update `clod.md` whenever creating new resources
+
+### Implementation Requirements
+- **Always use context7 MCP** for all functionality implementations
+- Use subagents for complex tasks
+- Track progress in `implementation-progress.md`
+- Push code after major functionality implementations
+
 ---
 
-Last Updated: 2025-07-17
+Last Updated: 2025-01-18
 Next Review: Weekly review schedule
