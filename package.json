@@ -5,7 +5,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build:frontend": "cd apps/web && npm install && npm run build:cloudflare",
+    "build:api": "cd personality-spark-api && npm install && npm run build",
+    "deploy:frontend": "cd apps/web && ./deploy-cloudflare.sh",
+    "install:all": "npm install && cd apps/web && npm install && cd ../../personality-spark-api && npm install"
   },
   "keywords": [
     "personality",

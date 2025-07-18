@@ -72,10 +72,19 @@
 
 ### Cloudflare Pages
 - **Project Name**: personality-spark-frontend
-- **Domain**: [TO BE FILLED]
-- **Build Command**: npm run build
-- **Build Output**: dist
-- **Environment Variables**: [TO BE CONFIGURED]
+- **Domain**: [TO BE FILLED - e.g., personality-spark.pages.dev]
+- **Build Command**: `cd apps/web && npm install && npm run build:cloudflare`
+- **Build Output**: `apps/web/dist`
+- **Root Directory**: `/`
+- **Node Version**: 18
+- **Environment Variables**:
+  - `API_URL`: https://personality-spark-api.workers.dev/api/v1
+  - `REACT_APP_API_URL`: https://personality-spark-api.workers.dev/api/v1
+  - `REACT_APP_GA_TRACKING_ID`: [TO BE CONFIGURED]
+  - `REACT_APP_ADSENSE_CLIENT_ID`: [TO BE CONFIGURED]
+- **Auto Deployments**: Enabled
+- **Preview Deployments**: Enabled
+- **Branch Deployments**: All branches
 
 ### AI Services
 - **Workers AI**: Enabled
@@ -137,11 +146,14 @@ DEEPSEEK_API_KEY=[TO BE CONFIGURED VIA SECRETS]
 - Resource IDs updated as they are created
 
 ## 🚀 Deployment Commands
+
+### Workers Deployment
 ```bash
 # Login to Cloudflare
 wrangler login
 
 # Deploy Workers
+cd personality-spark-api
 wrangler deploy
 
 # Create D1 Database
@@ -154,8 +166,27 @@ wrangler kv:namespace create "CACHE"
 # Create R2 Bucket
 wrangler r2 bucket create personality-spark-media
 
-# Create Queue
+# Create Queue (requires paid plan)
 wrangler queues create personality-spark-tasks
+```
+
+### Pages Deployment (Frontend)
+```bash
+# Option 1: GitHub Integration (Recommended)
+# 1. Go to Cloudflare Dashboard > Pages
+# 2. Create new project > Connect to Git
+# 3. Select repository: personality-spark
+# 4. Configure build settings as documented above
+
+# Option 2: Direct Upload
+cd apps/web
+npm run build:cloudflare
+# Upload dist/ folder in Cloudflare Pages dashboard
+
+# Option 3: Wrangler CLI
+cd apps/web
+npm run build:cloudflare
+wrangler pages deploy dist --project-name=personality-spark-frontend
 ```
 
 ## 📊 Status

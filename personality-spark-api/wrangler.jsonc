@@ -30,8 +30,8 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "personality-spark",
-			"database_id": "YOUR_D1_DATABASE_ID"
+			"database_name": "personality-spark-db",
+			"database_id": "0e844e2c-54e1-4122-bab1-698fc86be2f6"
 		}
 	],
 	
@@ -39,13 +39,11 @@
 	"kv_namespaces": [
 		{
 			"binding": "CACHE",
-			"id": "YOUR_KV_NAMESPACE_ID",
-			"preview_id": "YOUR_KV_PREVIEW_ID"
+			"id": "c79fa3abb6d949d5aa540373fbb9fe4a"
 		},
 		{
 			"binding": "SESSIONS",
-			"id": "YOUR_SESSIONS_KV_ID",
-			"preview_id": "YOUR_SESSIONS_PREVIEW_ID"
+			"id": "643c50b21e5d44aca5f49c84a509a40d"
 		}
 	],
 	
@@ -53,7 +51,7 @@
 	"r2_buckets": [
 		{
 			"binding": "STORAGE",
-			"bucket_name": "personality-spark-storage"
+			"bucket_name": "personality-spark-media"
 		}
 	],
 	
@@ -66,6 +64,14 @@
 			}
 		]
 	},
+	
+	// Durable Objects migrations configuration
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_classes": ["RateLimiter"]
+		}
+	],
 	
 	// Environment variables
 	"vars": {
