@@ -1,0 +1,45 @@
+name = "personality-spark-api"
+main = "personality-spark-api/src/index.ts"
+compatibility_date = "2025-07-18"
+compatibility_flags = ["nodejs_compat"]
+
+# Account details
+account_id = "79c03e5169d22c2c869d0d3c80932187"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "personality-spark-db"
+database_id = "0e844e2c-54e1-4122-bab1-698fc86be2f6"
+
+# KV Namespaces
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "643c50b21e5d44aca5f49c84a509a40d"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "c79fa3abb6d949d5aa540373fbb9fe4a"
+
+# R2 Storage
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "personality-spark-media"
+
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "personality-spark-backups"
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "personality-spark-files"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+API_VERSION = "v1"
+CORS_ORIGIN = "https://personalityspark.com"
+
+# Static assets
+[site]
+bucket = "./personality-spark-api/public"
