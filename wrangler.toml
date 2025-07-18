@@ -6,6 +6,10 @@ compatibility_flags = ["nodejs_compat"]
 # Account details
 account_id = "79c03e5169d22c2c869d0d3c80932187"
 
+# Workers AI
+[ai]
+binding = "AI"
+
 # D1 Database
 [[d1_databases]]
 binding = "DB"
@@ -23,6 +27,10 @@ id = "c79fa3abb6d949d5aa540373fbb9fe4a"
 
 # R2 Storage
 [[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "personality-spark-media"
+
+[[r2_buckets]]
 binding = "MEDIA"
 bucket_name = "personality-spark-media"
 
@@ -34,12 +42,27 @@ bucket_name = "personality-spark-backups"
 binding = "FILES"
 bucket_name = "personality-spark-files"
 
+# Durable Objects
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiter"
+script_name = "personality-spark-api"
+
+# Durable Objects migrations
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]
+
 # Environment variables
 [vars]
 ENVIRONMENT = "production"
 API_VERSION = "v1"
 CORS_ORIGIN = "https://personalityspark.com"
 
-# Static assets
+# Assets - serve the frontend from the Worker
 [site]
 bucket = "./personality-spark-api/public"
+
+# Observability
+[observability]
+enabled = true
