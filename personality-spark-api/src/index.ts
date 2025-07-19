@@ -111,19 +111,52 @@ app.get('*', async (c) => {
     // Use the ASSETS binding from Workers Sites
     const response = await c.env.ASSETS.fetch(assetRequest);
     
-    // If not found, try serving index.html for client-side routing
+    // If not found, check if we should serve index.html for client-side routing
     if (response.status === 404) {
-      const indexUrl = new URL(url);
-      indexUrl.pathname = '/index.html';
-      const indexRequest = new Request(indexUrl.toString(), c.req.raw);
-      const indexResponse = await c.env.ASSETS.fetch(indexRequest);
+      // Check if the path has a file extension
+      const hasFileExtension = /\.[a-zA-Z0-9]+$/.test(url.pathname);
       
-      if (indexResponse.status === 200) {
-        return new Response(indexResponse.body, {
-          headers: {
-            'content-type': 'text/html;charset=UTF-8',
-            'cache-control': 'no-cache',
-          },
+      // Only serve index.html for routes without file extensions (actual routes)
+      // Don't serve index.html for missing assets like .js, .css, .png, etc.
+      if (!hasFileExtension) {
+        const indexUrl = new URL(url);
+        indexUrl.pathname = '/index.html';
+        const indexRequest = new Request(indexUrl.toString(), c.req.raw);
+        const indexResponse = await c.env.ASSETS.fetch(indexRequest);
+        
+        if (indexResponse.status === 200) {
+          // Clone the response and add appropriate headers
+          return new Response(indexResponse.body, {
+            status: 200,
+            statusText: 'OK',
+            headers: {
+              'content-type': 'text/html;charset=UTF-8',
+              'cache-control': 'no-cache',
+              // Add security headers for HTML
+              'x-content-type-options': 'nosniff',
+              'x-frame-options': 'DENY',
+            },
+          });
+        }
+      }
+      
+      // For files with extensions that don't exist, return a proper 404
+      return c.text('Not Found', 404);
+    }
+    
+    // Add cache headers for static assets
+    if (response.status === 200) {
+      const hasFileExtension = /\.[a-zA-Z0-9]+$/.test(url.pathname);
+      if (hasFileExtension) {
+        // Clone response and add cache headers for static assets
+        const headers = new Headers(response.headers);
+        // Cache static assets for 1 day
+        headers.set('cache-control', 'public, max-age=86400');
+        
+        return new Response(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers,
         });
       }
     }
