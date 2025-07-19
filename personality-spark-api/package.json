@@ -4,14 +4,14 @@
 	"private": true,
 	"description": "Cloudflare Workers API for Personality Spark",
 	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
+		"deploy": "npx wrangler@4 deploy",
+		"dev": "npx wrangler@4 dev",
+		"start": "npx wrangler@4 dev",
 		"test": "vitest",
 		"test:watch": "vitest --watch",
-		"cf-typegen": "wrangler types",
-		"db:migrate": "wrangler d1 execute personality-spark --local --file=./migrations/0001_initial_schema.sql",
-		"db:migrate:prod": "wrangler d1 execute personality-spark --file=./migrations/0001_initial_schema.sql"
+		"cf-typegen": "npx wrangler@4 types",
+		"db:migrate": "npx wrangler@4 d1 execute personality-spark --local --file=./migrations/0001_initial_schema.sql",
+		"db:migrate:prod": "npx wrangler@4 d1 execute personality-spark --file=./migrations/0001_initial_schema.sql"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "^0.8.19",
