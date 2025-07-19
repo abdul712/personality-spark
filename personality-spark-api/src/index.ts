@@ -71,7 +71,7 @@ app.route('/api/v1/share', shareRouter);
 app.route('/api/v1/user', userRouter);
 app.route('/api/v1/analytics', analyticsRouter);
 
-// Serve static files for non-API routes using ASSETS binding
+// Serve static files for non-API routes
 app.get('*', async (c) => {
   const url = new URL(c.req.url);
   
@@ -83,8 +83,50 @@ app.get('*', async (c) => {
     }, 404);
   }
   
-  // Serve static assets
-  return c.env.ASSETS.fetch(c.req.raw);
+  // For the root path, serve index.html
+  if (url.pathname === '/') {
+    url.pathname = '/index.html';
+  }
+  
+  try {
+    // Use the __STATIC_CONTENT binding that Cloudflare Workers provides
+    const asset = await c.env.__STATIC_CONTENT.get(url.pathname.slice(1));
+    
+    if (asset === null) {
+      // If asset not found, try serving index.html for client-side routing
+      const indexAsset = await c.env.__STATIC_CONTENT.get('index.html');
+      if (indexAsset !== null) {
+        return new Response(indexAsset, {
+          headers: {
+            'content-type': 'text/html;charset=UTF-8',
+          },
+        });
+      }
+      return c.notFound();
+    }
+    
+    // Determine content type based on file extension
+    const contentType = url.pathname.endsWith('.js') ? 'application/javascript' :
+                       url.pathname.endsWith('.css') ? 'text/css' :
+                       url.pathname.endsWith('.html') ? 'text/html' :
+                       url.pathname.endsWith('.json') ? 'application/json' :
+                       url.pathname.endsWith('.png') ? 'image/png' :
+                       url.pathname.endsWith('.jpg') || url.pathname.endsWith('.jpeg') ? 'image/jpeg' :
+                       url.pathname.endsWith('.svg') ? 'image/svg+xml' :
+                       'application/octet-stream';
+    
+    return new Response(asset, {
+      headers: {
+        'content-type': contentType,
+        'cache-control': 'public, max-age=3600',
+      },
+    });
+  } catch (e) {
+    return c.json({
+      error: 'Internal Server Error',
+      message: e.message,
+    }, 500);
+  }
 });
 
 export default app;
