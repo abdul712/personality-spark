@@ -1,0 +1,58 @@
+name = "personality-spark-api"
+main = "personality-spark-api/src/index.ts"
+compatibility_date = "2025-07-18"
+compatibility_flags = ["global_fetch_strictly_public"]
+
+# Account details
+account_id = "79c03e5169d22c2c869d0d3c80932187"
+
+# Workers AI for quiz generation
+[ai]
+binding = "AI"
+
+# D1 Database for user accounts and quiz results
+[[d1_databases]]
+binding = "DB"
+database_name = "personality-spark-db"
+database_id = "0e844e2c-54e1-4122-bab1-698fc86be2f6"
+
+# KV for caching and sessions
+[[kv_namespaces]]
+binding = "CACHE"
+id = "c79fa3abb6d949d5aa540373fbb9fe4a"
+
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "643c50b21e5d44aca5f49c84a509a40d"
+
+# R2 for file storage (share cards, etc)
+[[r2_buckets]]
+binding = "STORAGE"
+bucket_name = "personality-spark-media"
+
+# Rate limiting using Durable Objects
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiter"
+script_name = "personality-spark-api"
+
+# Durable Objects migrations configuration
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+API_VERSION = "v1"
+CORS_ORIGIN = "https://personalityspark.com"
+
+# Assets - serve the frontend from the Worker
+[assets]
+directory = "./personality-spark-api/public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# Observability
+[observability]
+enabled = true

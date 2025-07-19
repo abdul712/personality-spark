@@ -1,0 +1,9 @@
+{
+  "name": "personality-spark",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "cd personality-spark-api && npm install && cd .. && npx wrangler deploy",
+    "install": "cd personality-spark-api && npm install"
+  }
+}
