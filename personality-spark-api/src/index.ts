@@ -65,6 +65,15 @@ app.get('/health', (c) => {
   });
 });
 
+// Debug endpoint - minimal response
+app.get('/debug', (c) => {
+  return new Response('OK', {
+    headers: {
+      'Content-Type': 'text/plain',
+    },
+  });
+});
+
 // API routes
 app.route('/api/v1/quizzes', quizRouter);
 app.route('/api/v1/ai', aiRouter);
@@ -90,6 +99,12 @@ app.get('*', async (c) => {
   }
   
   try {
+    // Check if ASSETS binding exists
+    if (!c.env.ASSETS) {
+      console.error('ASSETS binding not found');
+      return c.text('ASSETS binding not configured', 500);
+    }
+    
     // Create a new request for the asset
     const assetRequest = new Request(url.toString(), c.req.raw);
     
