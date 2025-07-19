@@ -7,7 +7,7 @@
     "start": "cd personality-spark-api && npm start",
     "dev": "cd personality-spark-api && npm run dev",
     "build": "cd personality-spark-api && npm install && cd ../apps/web && npm install && npm run build && cd ../.. && rm -rf personality-spark-api/public/* && cp -r apps/web/dist/* personality-spark-api/public/",
-    "postinstall": "cd personality-spark-api && npm install",
+    "postinstall": "cd personality-spark-api && npm install && npm list wrangler || true",
     "deploy": "cd personality-spark-api && npm install && npm run deploy",
     "install:all": "npm install && cd apps/web && npm install && cd ../../personality-spark-api && npm install"
   },
@@ -21,6 +21,9 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "wrangler": "3.57.0"
   },
   "engines": {
     "node": ">=18.0.0"

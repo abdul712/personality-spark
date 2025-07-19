@@ -1,0 +1,5 @@
+#!/bin/bash
+# Wrapper script to use the correct wrangler version
+
+cd personality-spark-api
+exec ./node_modules/.bin/wrangler "$@"
