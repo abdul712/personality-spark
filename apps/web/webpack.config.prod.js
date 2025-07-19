@@ -1,6 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   mode: 'production',
@@ -35,6 +36,9 @@ module.exports = {
               '@babel/preset-env',
               '@babel/preset-react',
               '@babel/preset-typescript'
+            ],
+            plugins: [
+              ['nativewind/babel', { mode: 'transformOnly' }]
             ]
           }
         }
@@ -42,7 +46,7 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'style-loader',
+          MiniCssExtractPlugin.loader,
           'css-loader',
           {
             loader: 'postcss-loader',
@@ -70,6 +74,9 @@ module.exports = {
     ]
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+    }),
     new HtmlWebpackPlugin({
       template: './public/index.html',
       filename: 'index.html',

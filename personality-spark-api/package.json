@@ -14,15 +14,15 @@
 		"db:migrate:prod": "npx wrangler@4 d1 execute personality-spark --file=./migrations/0001_initial_schema.sql"
 	},
 	"devDependencies": {
-		"@cloudflare/vitest-pool-workers": "^0.8.19",
-		"@cloudflare/workers-types": "^4.20250718.0",
-		"typescript": "^5.5.2",
-		"vitest": "~3.2.0",
+		"@cloudflare/vitest-pool-workers": "^0.8.55",
+		"@cloudflare/workers-types": "^4.20250719.0",
+		"typescript": "^5.8.3",
+		"vitest": "^3.2.4",
 		"wrangler": "^4.25.0"
 	},
 	"dependencies": {
-		"@cloudflare/kv-asset-handler": "^0.3.4",
-		"@hono/zod-validator": "^0.7.1",
+		"@cloudflare/kv-asset-handler": "^0.4.0",
+		"@hono/zod-validator": "^0.7.2",
 		"hono": "^4.8.5",
 		"zod": "^4.0.5"
 	}

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Style Test</title>
+    <style>
+        /* Test if these styles work */
+        .test-red { background-color: red; color: white; padding: 20px; }
+        .test-blue { background-color: blue; color: white; padding: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Testing Styles</h1>
+    <div class="test-red">This should have a red background</div>
+    <div class="test-blue">This should have a blue background</div>
+    
+    <hr>
+    
+    <h2>Testing Tailwind Classes</h2>
+    <div class="bg-purple-500 text-white p-4">This should have purple background (if Tailwind works)</div>
+    <div class="flex-1 bg-gray-900 text-white p-4">This should have dark gray background</div>
+    
+    <script>
+        // Check if any styles are loaded
+        console.log('Stylesheets:', document.styleSheets);
+        console.log('Number of stylesheets:', document.styleSheets.length);
+        
+        // Check computed styles
+        const purpleDiv = document.querySelector('.bg-purple-500');
+        if (purpleDiv) {
+            const styles = window.getComputedStyle(purpleDiv);
+            console.log('Purple div background:', styles.backgroundColor);
+        }
+    </script>
+</body>
+</html>

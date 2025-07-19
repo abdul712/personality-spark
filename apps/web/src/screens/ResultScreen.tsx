@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Share, Platform, Animated } from 'react-native';
+import { TouchableOpacity, Share, Platform, Animated } from 'react-native';
+import { View, Text, ScrollView } from '../components/WebView';
 import { Icon } from '../components/ui/Icons';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';

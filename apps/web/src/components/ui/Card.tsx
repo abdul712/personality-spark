@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, ViewProps } from 'react-native';
+import { ViewProps } from 'react-native';
+import { View, Text } from '../WebView';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const cardVariants = cva(
