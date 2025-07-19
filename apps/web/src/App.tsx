@@ -21,6 +21,8 @@ interface NavigationState {
 }
 
 const App: React.FC = () => {
+  console.log('App component rendering');
+  
   const [navigationState, setNavigationState] = useState<NavigationState>({
     screen: 'Home'
   });
@@ -80,6 +82,18 @@ const App: React.FC = () => {
         return <HomeScreen navigation={navigationProp} />;
     }
   };
+
+  // Temporarily render a simple test component to verify React is working
+  const DEBUG_MODE = false; // Set to true to enable debug mode
+  
+  if (DEBUG_MODE) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f0f0f0' }}>
+        <Text style={{ fontSize: 24, color: '#333' }}>React is working!</Text>
+        <Text style={{ fontSize: 16, color: '#666', marginTop: 10 }}>Personality Spark App</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

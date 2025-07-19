@@ -1,6 +1,7 @@
 // Web-specific style utilities for React Native Web
 // This provides a workaround for className support
 
+import React from 'react';
 import { Platform } from 'react-native';
 
 // Enable className support for web platform
