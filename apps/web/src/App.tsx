@@ -4,6 +4,7 @@ import HomeScreen from './screens/HomeScreen';
 import QuizListScreen from './screens/QuizListScreen';
 import QuizScreen from './screens/QuizScreen';
 import ResultScreen from './screens/ResultScreen';
+// import { ButtonDebug } from './components/ButtonDebug'; // Uncomment to debug buttons
 
 export type RootStackParamList = {
   Home: undefined;
@@ -84,6 +85,7 @@ const App: React.FC = () => {
     <View style={styles.container}>
       {renderHeader()}
       {renderScreen()}
+      {/* <ButtonDebug /> */}
     </View>
   );
 };

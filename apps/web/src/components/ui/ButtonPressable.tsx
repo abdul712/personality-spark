@@ -1,9 +1,9 @@
 import React from 'react';
-import { TouchableOpacity, Text, View, ActivityIndicator, TouchableOpacityProps, Platform } from 'react-native';
+import { Pressable, Text, View, ActivityIndicator, PressableProps, Platform } from 'react-native';
 import { cva, type VariantProps } from 'class-variance-authority';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 button-press',
+  'inline-flex items-center justify-center rounded-lg font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50',
   {
     variants: {
       variant: {
@@ -33,15 +33,16 @@ const buttonVariants = cva(
   }
 );
 
-export interface ButtonProps extends TouchableOpacityProps, VariantProps<typeof buttonVariants> {
+export interface ButtonPressableProps extends Omit<PressableProps, 'style'>, VariantProps<typeof buttonVariants> {
   children: React.ReactNode;
   loading?: boolean;
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   className?: string;
+  style?: any;
 }
 
-export const Button = React.forwardRef<TouchableOpacity, ButtonProps>(
+export const ButtonPressable = React.forwardRef<View, ButtonPressableProps>(
   ({ 
     children, 
     variant, 
@@ -58,32 +59,21 @@ export const Button = React.forwardRef<TouchableOpacity, ButtonProps>(
   }, ref) => {
     const isDisabled = disabled || loading;
     
-    // Enhanced web compatibility for click handling
-    const handlePress = React.useCallback((event: any) => {
-      if (!isDisabled && onPress) {
-        // Prevent any bubbling issues
-        if (event && event.stopPropagation) {
-          event.stopPropagation();
-        }
-        onPress(event);
-      }
-    }, [isDisabled, onPress]);
-    
-    // Add web-specific styles to ensure clickability
-    const webStyle = Platform.OS === 'web' ? {
-      cursor: isDisabled ? 'not-allowed' : 'pointer',
-      userSelect: 'none' as const,
-      pointerEvents: isDisabled ? 'none' as const : 'auto' as const,
-      ...style
-    } : style;
-    
     return (
-      <TouchableOpacity
+      <Pressable
         ref={ref}
         disabled={isDisabled}
+        onPress={onPress}
         className={buttonVariants({ variant, size, fullWidth, className })}
-        style={webStyle}
-        onPress={handlePress}
+        style={({ pressed }) => [
+          {
+            opacity: pressed ? 0.8 : 1,
+            transform: pressed ? [{ scale: 0.98 }] : [{ scale: 1 }],
+            cursor: isDisabled ? 'not-allowed' : 'pointer',
+            pointerEvents: isDisabled ? 'none' : 'auto',
+          },
+          style,
+        ]}
         accessible={true}
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled }}
@@ -101,31 +91,32 @@ export const Button = React.forwardRef<TouchableOpacity, ButtonProps>(
               {icon && iconPosition === 'left' && (
                 <View className="mr-2">{icon}</View>
               )}
-              <Text className={`
-                font-medium
-                ${variant === 'outline' || variant === 'ghost' || variant === 'link' 
-                  ? 'text-gray-900 dark:text-gray-100' 
-                  : 'text-white'
-                }
-                ${size === 'sm' && 'text-sm'}
-                ${size === 'md' && 'text-base'}
-                ${size === 'lg' && 'text-lg'}
-                ${size === 'xl' && 'text-xl'}
-              `}>
-                {children}
-              </Text>
+              {typeof children === 'string' ? (
+                <Text className={`
+                  font-medium
+                  ${variant === 'outline' || variant === 'ghost' || variant === 'link' 
+                    ? 'text-gray-900 dark:text-gray-100' 
+                    : 'text-white'
+                  }
+                  ${size === 'sm' && 'text-sm'}
+                  ${size === 'md' && 'text-base'}
+                  ${size === 'lg' && 'text-lg'}
+                  ${size === 'xl' && 'text-xl'}
+                `}>
+                  {children}
+                </Text>
+              ) : (
+                children
+              )}
               {icon && iconPosition === 'right' && (
                 <View className="ml-2">{icon}</View>
               )}
             </>
           )}
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   }
 );
 
-Button.displayName = 'Button';
-
-// Export the Pressable version as well for testing
-export { ButtonPressable } from './ButtonPressable';
+ButtonPressable.displayName = 'ButtonPressable';

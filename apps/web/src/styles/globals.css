@@ -270,6 +270,26 @@ html {
   @apply active:scale-95 transition-transform duration-150;
 }
 
+/* Fix for React Native Web TouchableOpacity */
+[role="button"] {
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+[role="button"]:disabled {
+  cursor: not-allowed;
+}
+
+/* Ensure pointer events work correctly */
+.pointer-events-none {
+  pointer-events: none !important;
+}
+
+.pointer-events-auto {
+  pointer-events: auto !important;
+}
+
 /* Glow Effect */
 .glow {
   box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);

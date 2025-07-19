@@ -72,7 +72,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       {/* Hero Section with Animated Gradient Mesh */}
       <View className="relative overflow-hidden">
         {/* Animated gradient background */}
-        <View className="absolute inset-0">
+        <View className="absolute inset-0 pointer-events-none">
           <View className="absolute top-0 left-0 w-96 h-96 bg-purple-500/30 rounded-full blur-3xl animate-pulse" />
           <View className="absolute top-20 right-0 w-80 h-80 bg-pink-500/20 rounded-full blur-3xl animate-pulse delay-300" />
           <View className="absolute bottom-0 left-1/2 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-700" />
@@ -126,6 +126,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   variant="outline"
                   size="lg"
                   className="min-w-[180px] border-2"
+                  onPress={() => {
+                    // TODO: Implement demo functionality
+                    alert('Demo coming soon!');
+                  }}
                 >
                   <Icon name="play-circle" size={20} color="#9333ea" />
                   <Text className="ml-2 text-purple-600 dark:text-purple-400 font-semibold">
@@ -338,7 +342,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       {/* Final CTA Section */}
       <View className="px-6 py-20 bg-gradient-to-br from-purple-600 to-pink-600 dark:from-purple-700 dark:to-pink-700 relative overflow-hidden">
-        <View className="absolute inset-0">
+        <View className="absolute inset-0 pointer-events-none">
           <View className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
           <View className="absolute bottom-0 left-0 w-80 h-80 bg-white/10 rounded-full blur-3xl" />
         </View>

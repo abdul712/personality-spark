@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Click Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        .debug-info {
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .button-test {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            background: #9333ea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .button-test:hover {
+            background: #7928ca;
+            transform: translateY(-1px);
+        }
+        .button-test:active {
+            transform: scale(0.95);
+        }
+        .button-test:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        #event-log {
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .log-entry {
+            padding: 2px 0;
+            font-size: 12px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>React Native Web Button Click Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Instructions</h2>
+        <ol>
+            <li>Open your deployed website: <a href="https://personality-spark-api.mabdulrahim.workers.dev" target="_blank">https://personality-spark-api.mabdulrahim.workers.dev</a></li>
+            <li>Open the browser's Developer Console (F12)</li>
+            <li>Try clicking the "Start Free Quiz" and "Watch Demo" buttons</li>
+            <li>Check the console for any errors</li>
+            <li>Use the test buttons below to verify basic click handling works in your browser</li>
+        </ol>
+    </div>
+
+    <div class="test-section">
+        <h2>Browser Click Test</h2>
+        <button class="button-test" onclick="testClick('Button 1')">Test Button 1</button>
+        <button class="button-test" onclick="testClick('Button 2')">Test Button 2</button>
+        <button class="button-test" disabled onclick="testClick('Disabled')">Disabled Button</button>
+        
+        <div id="event-log"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Debugging Steps</h2>
+        <div class="debug-info">
+            <p><strong>Common Issues with React Native Web Buttons:</strong></p>
+            <ul>
+                <li>CSS pointer-events: none blocking clicks</li>
+                <li>TouchableOpacity event handling differences</li>
+                <li>Missing onPress handlers</li>
+                <li>Z-index stacking issues</li>
+                <li>Absolute positioned overlays blocking clicks</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Console Debug Commands</h2>
+        <div class="debug-info">
+            <p>Paste these in the browser console on your deployed site:</p>
+            <pre>
+// Check if buttons exist
+document.querySelectorAll('[role="button"]').forEach((btn, i) => {
+    console.log(`Button ${i}:`, btn);
+    console.log('Computed styles:', window.getComputedStyle(btn));
+});
+
+// Check pointer events
+document.querySelectorAll('[role="button"]').forEach((btn, i) => {
+    const styles = window.getComputedStyle(btn);
+    console.log(`Button ${i} pointer-events:`, styles.pointerEvents);
+    console.log(`Button ${i} cursor:`, styles.cursor);
+});
+
+// Test click programmatically
+document.querySelectorAll('[role="button"]')[0]?.click();
+            </pre>
+        </div>
+    </div>
+
+    <script>
+        const eventLog = document.getElementById('event-log');
+        
+        function testClick(buttonName) {
+            const timestamp = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${timestamp}] ${buttonName} clicked!`;
+            eventLog.insertBefore(entry, eventLog.firstChild);
+        }
+        
+        // Log page load
+        window.addEventListener('load', () => {
+            testClick('Page loaded');
+        });
+    </script>
+</body>
+</html>

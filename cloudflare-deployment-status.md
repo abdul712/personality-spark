@@ -79,3 +79,19 @@ The Cloudflare build system was using an older Wrangler version (3.57.0) that di
 - Deployment URL: https://personality-spark-api.mabdulrahim.workers.dev
 
 The deployment now works correctly with automatic GitHub deployments.
+
+## Wrangler Version Fix (2025-01-19 - Part 2)
+The Cloudflare build system was using the wrong Wrangler version from the root package.json.
+
+### Issue:
+- Root package.json had `wrangler@3.57.0` which overrode the Worker's `wrangler@^4.25.0`
+- Wrangler 3.x doesn't support the new [assets] syntax
+
+### Solution:
+1. Updated root package.json to use `wrangler@^4.25.0`
+2. Added explicit `npx wrangler@4` in all commands to force version 4
+3. Created build-cloudflare.sh script for controlled deployments
+4. Moved conflicting root wrangler.toml to backup
+5. Converted wrangler.jsonc to proper wrangler.toml in the Worker directory
+
+The deployment now correctly uses Wrangler 4.x with the modern [assets] configuration.
