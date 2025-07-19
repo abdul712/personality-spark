@@ -25,9 +25,10 @@ const app = new Hono<Context>();
 // Global middleware
 app.use('*', logger());
 app.use('*', timing());
-app.use('*', compress({
-  encoding: 'gzip'
-}));
+// Temporarily disable compression to debug issue
+// app.use('*', compress({
+//   encoding: 'gzip'
+// }));
 app.use('*', etag());
 app.use('*', secureHeaders());
 
