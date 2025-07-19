@@ -1,5 +1,5 @@
 name = "personality-spark-api"
-main = "personality-spark-api/src/index.ts"
+main = "personality-spark-api/src/index-assets.ts"
 compatibility_date = "2024-05-01"
 compatibility_flags = ["nodejs_compat"]
 
@@ -60,10 +60,9 @@ API_VERSION = "v1"
 CORS_ORIGIN = "https://personalityspark.com"
 
 # Assets - serve the frontend from the Worker
+# Using new syntax for Wrangler 4.x
 [assets]
 directory = "./personality-spark-api/public"
-binding = "ASSETS"
-not_found_handling = "single-page-application"
 
 # Observability
 [observability]

@@ -17,6 +17,7 @@ export interface Env {
   
   // Static Assets
   ASSETS: Fetcher;
+  __STATIC_CONTENT: KVNamespace;
   
   // Environment Variables
   ENVIRONMENT: string;

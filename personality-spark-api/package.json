@@ -18,9 +18,10 @@
 		"@cloudflare/workers-types": "^4.20250718.0",
 		"typescript": "^5.5.2",
 		"vitest": "~3.2.0",
-		"wrangler": "3.57.0"
+		"wrangler": "^4.25.0"
 	},
 	"dependencies": {
+		"@cloudflare/kv-asset-handler": "^0.3.4",
 		"@hono/zod-validator": "^0.7.1",
 		"hono": "^4.8.5",
 		"zod": "^4.0.5"
