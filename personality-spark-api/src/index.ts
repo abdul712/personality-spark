@@ -89,42 +89,35 @@ app.get('*', async (c) => {
   }
   
   try {
-    // Use the __STATIC_CONTENT binding that Cloudflare Workers provides
-    const asset = await c.env.__STATIC_CONTENT.get(url.pathname.slice(1));
+    // Create a new request for the asset
+    const assetRequest = new Request(url.toString(), c.req.raw);
     
-    if (asset === null) {
-      // If asset not found, try serving index.html for client-side routing
-      const indexAsset = await c.env.__STATIC_CONTENT.get('index.html');
-      if (indexAsset !== null) {
-        return new Response(indexAsset, {
+    // Use the ASSETS binding from Workers Sites
+    const response = await c.env.ASSETS.fetch(assetRequest);
+    
+    // If not found, try serving index.html for client-side routing
+    if (response.status === 404) {
+      const indexUrl = new URL(url);
+      indexUrl.pathname = '/index.html';
+      const indexRequest = new Request(indexUrl.toString(), c.req.raw);
+      const indexResponse = await c.env.ASSETS.fetch(indexRequest);
+      
+      if (indexResponse.status === 200) {
+        return new Response(indexResponse.body, {
           headers: {
             'content-type': 'text/html;charset=UTF-8',
+            'cache-control': 'no-cache',
           },
         });
       }
-      return c.notFound();
     }
     
-    // Determine content type based on file extension
-    const contentType = url.pathname.endsWith('.js') ? 'application/javascript' :
-                       url.pathname.endsWith('.css') ? 'text/css' :
-                       url.pathname.endsWith('.html') ? 'text/html' :
-                       url.pathname.endsWith('.json') ? 'application/json' :
-                       url.pathname.endsWith('.png') ? 'image/png' :
-                       url.pathname.endsWith('.jpg') || url.pathname.endsWith('.jpeg') ? 'image/jpeg' :
-                       url.pathname.endsWith('.svg') ? 'image/svg+xml' :
-                       'application/octet-stream';
-    
-    return new Response(asset, {
-      headers: {
-        'content-type': contentType,
-        'cache-control': 'public, max-age=3600',
-      },
-    });
+    return response;
   } catch (e) {
+    // Fallback error handling
     return c.json({
       error: 'Internal Server Error',
-      message: e.message,
+      message: e.message || 'Failed to serve static assets',
     }, 500);
   }
 });
