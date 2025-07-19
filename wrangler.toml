@@ -60,8 +60,10 @@ API_VERSION = "v1"
 CORS_ORIGIN = "https://personalityspark.com"
 
 # Assets - serve the frontend from the Worker
-[site]
-bucket = "./personality-spark-api/public"
+[assets]
+directory = "./personality-spark-api/public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
 
 # Observability
 [observability]
