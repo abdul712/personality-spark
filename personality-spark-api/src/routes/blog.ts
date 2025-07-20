@@ -3,27 +3,42 @@ import type { Context } from '../types/env';
 
 export const blogRouter = new Hono<Context>();
 
-// Static blog data (will be replaced with D1 database later)
-const blogData = {
-  posts: [] as any[]
-};
-
-// Load blog data from KV storage or use static data
-async function loadBlogData(c: Context['var']) {
+// Load blog data from static file or KV
+async function loadBlogData(c: any) {
   try {
-    // Try to get blog data from KV storage
+    // Try to get blog data from KV storage first
     const cached = await c.env.CACHE.get('blog-data', 'json');
-    if (cached) {
+    if (cached && cached.posts && cached.posts.length > 0) {
       return cached;
     }
-    
-    // If not in cache, return empty for now
-    // In production, this would load from D1 database
-    return blogData;
   } catch (error) {
-    console.error('Error loading blog data:', error);
-    return blogData;
+    console.error('Error loading from KV:', error);
   }
+  
+  try {
+    // Fetch from the static blog-data.json file served by the Worker
+    const url = new URL(c.req.url);
+    const blogDataUrl = `${url.protocol}//${url.host}/blog-data.json`;
+    const response = await fetch(blogDataUrl);
+    
+    if (response.ok) {
+      const data = await response.json();
+      // Cache it in KV for future use
+      try {
+        await c.env.CACHE.put('blog-data', JSON.stringify(data), {
+          expirationTtl: 3600 // Cache for 1 hour
+        });
+      } catch (cacheError) {
+        console.error('Error caching blog data:', cacheError);
+      }
+      return data;
+    }
+  } catch (error) {
+    console.error('Error fetching blog data:', error);
+  }
+  
+  // Return empty data as last resort
+  return { posts: [] };
 }
 
 // Get all blog posts
@@ -32,7 +47,7 @@ blogRouter.get('/posts', async (c) => {
   const limit = parseInt(c.req.query('limit') || '20');
   const search = c.req.query('search');
   
-  const data = await loadBlogData(c.var);
+  const data = await loadBlogData(c);
   let posts = data.posts || [];
   
   // Search functionality
@@ -67,7 +82,7 @@ blogRouter.get('/posts', async (c) => {
 // Get a single blog post by slug
 blogRouter.get('/posts/:slug', async (c) => {
   const slug = c.req.param('slug');
-  const data = await loadBlogData(c.var);
+  const data = await loadBlogData(c);
   const posts = data.posts || [];
   
   const post = posts.find((p: any) => p.slug === slug);
@@ -84,7 +99,7 @@ blogRouter.get('/posts/:slug/related', async (c) => {
   const slug = c.req.param('slug');
   const limit = parseInt(c.req.query('limit') || '5');
   
-  const data = await loadBlogData(c.var);
+  const data = await loadBlogData(c);
   const posts = data.posts || [];
   
   // Find current post
