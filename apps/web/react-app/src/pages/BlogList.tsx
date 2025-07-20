@@ -11,26 +11,44 @@ interface BlogPost {
   readTime: string;
 }
 
+const POSTS_PER_PAGE = 20;
+
 const BlogList: React.FC = () => {
-  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [allPosts, setAllPosts] = useState<BlogPost[]>([]);
+  const [displayedPosts, setDisplayedPosts] = useState<BlogPost[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchBlogPosts();
   }, []);
 
+  useEffect(() => {
+    // Update displayed posts when page changes
+    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+    const endIndex = startIndex + POSTS_PER_PAGE;
+    setDisplayedPosts(allPosts.slice(startIndex, endIndex));
+  }, [currentPage, allPosts]);
+
   const fetchBlogPosts = async () => {
     try {
-      const response = await fetch('/api/v1/blog/posts?limit=20');
+      const response = await fetch('/api/v1/blog/posts?limit=200');
       const data = await response.json();
-      setPosts(data.posts || []);
+      if (data.posts && data.posts.length > 0) {
+        setAllPosts(data.posts);
+        setTotalPages(Math.ceil(data.posts.length / POSTS_PER_PAGE));
+      } else {
+        throw new Error('No posts in API response');
+      }
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       // Fallback to static data
       try {
         const fallbackResponse = await fetch('/blog-data.json');
         const fallbackData = await fallbackResponse.json();
-        setPosts(fallbackData.posts.slice(0, 20));
+        setAllPosts(fallbackData.posts);
+        setTotalPages(Math.ceil(fallbackData.posts.length / POSTS_PER_PAGE));
       } catch (fallbackError) {
         console.error('Error fetching fallback data:', fallbackError);
       }
@@ -65,25 +83,89 @@ const BlogList: React.FC = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
           </div>
         ) : (
-          <div className="grid gap-8">
-            {posts.map((post) => (
-              <Link
-                key={post.id}
-                to={`/${post.slug}`}
-                className="block bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-8"
-              >
-                <h2 className="text-2xl font-bold text-gray-800 mb-3 hover:text-purple-600 transition-colors">
-                  {post.title}
-                </h2>
-                <p className="text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                <div className="flex items-center text-sm text-gray-500">
-                  <span>{post.date}</span>
-                  <span className="mx-2">•</span>
-                  <span>{post.readTime}</span>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {displayedPosts.map((post) => (
+                <Link
+                  key={post.id}
+                  to={`/${post.slug}`}
+                  className="block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
+                >
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors line-clamp-2">
+                      {post.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                    <div className="flex items-center text-xs text-gray-500">
+                      <span>{post.date}</span>
+                      <span className="mx-2">•</span>
+                      <span>{post.readTime}</span>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex justify-center items-center space-x-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                
+                <div className="flex space-x-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => {
+                    // Show first page, last page, current page, and pages around current
+                    if (
+                      page === 1 ||
+                      page === totalPages ||
+                      (page >= currentPage - 1 && page <= currentPage + 1)
+                    ) {
+                      return (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-2 text-sm font-medium rounded-md ${
+                            currentPage === page
+                              ? 'bg-purple-600 text-white'
+                              : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      );
+                    } else if (
+                      page === currentPage - 2 ||
+                      page === currentPage + 2
+                    ) {
+                      return (
+                        <span key={page} className="px-1 py-2 text-gray-500">
+                          ...
+                        </span>
+                      );
+                    }
+                    return null;
+                  })}
                 </div>
-              </Link>
-            ))}
-          </div>
+                
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            )}
+            
+            <div className="mt-4 text-center text-sm text-gray-600">
+              Showing {((currentPage - 1) * POSTS_PER_PAGE) + 1}-{Math.min(currentPage * POSTS_PER_PAGE, allPosts.length)} of {allPosts.length} articles
+            </div>
+          </>
         )}
       </main>
 

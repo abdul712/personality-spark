@@ -34,6 +34,7 @@ def convert_to_html(content):
     lines = content.strip().split('\n')
     html_parts = []
     in_list = False
+    skip_first_h1 = True  # Skip the first H1 since it's shown in the component
     
     for i, line in enumerate(lines):
         line = line.strip()
@@ -50,6 +51,9 @@ def convert_to_html(content):
             if in_list:
                 html_parts.append('</ul>')
                 in_list = False
+            if skip_first_h1:
+                skip_first_h1 = False
+                continue  # Skip the first H1
             html_parts.append(f'<h1>{line[2:].strip()}</h1>')
         elif line.startswith('## '):
             if in_list:
