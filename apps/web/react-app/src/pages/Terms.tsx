@@ -1,12 +1,36 @@
 import React from 'react';
-import { Navigation } from '../components/Navigation';
+import { Link } from 'react-router-dom';
 import { Footer } from '../components/Footer';
 import { FileText, Scale, UserCheck, Ban, AlertTriangle, Copyright, Globe, Gavel } from 'lucide-react';
 
 export default function Terms() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white dark:from-gray-900 dark:via-purple-900/20 dark:to-gray-900">
-      <Navigation />
+      {/* Navigation Header */}
+      <header className="bg-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-6">
+          <nav className="flex items-center justify-between">
+            <Link to="/" className="flex items-center space-x-2">
+              <span className="text-2xl">✨</span>
+              <span className="text-xl font-bold text-purple-600">PersonalitySpark</span>
+            </Link>
+            <div className="flex items-center space-x-6">
+              <Link 
+                to="/quiz-list"
+                className="text-gray-600 hover:text-purple-600 transition-colors"
+              >
+                Quizzes
+              </Link>
+              <Link 
+                to="/blog"
+                className="text-gray-600 hover:text-purple-600 transition-colors"
+              >
+                Blog
+              </Link>
+            </div>
+          </nav>
+        </div>
+      </header>
       
       <main className="pt-20 pb-16">
         {/* Hero Section */}
