@@ -10,12 +10,12 @@ export interface TrackingScript {
 }
 
 // Get environment variables with fallbacks
-const JOURNEY_SCRIPT_ID = process.env.REACT_APP_JOURNEY_SCRIPT_ID || '';
-const GA_MEASUREMENT_ID = process.env.REACT_APP_GA_MEASUREMENT_ID || '';
-const GOOGLE_SITE_VERIFICATION = process.env.REACT_APP_GOOGLE_SITE_VERIFICATION || '';
-const FB_PIXEL_ID = process.env.REACT_APP_FB_PIXEL_ID || '';
-const CUSTOM_HEAD_SCRIPTS = process.env.REACT_APP_CUSTOM_HEAD_SCRIPTS || '';
-const CUSTOM_BODY_SCRIPTS = process.env.REACT_APP_CUSTOM_BODY_SCRIPTS || '';
+const JOURNEY_SCRIPT_ID = import.meta.env.VITE_JOURNEY_SCRIPT_ID || '';
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || '';
+const GOOGLE_SITE_VERIFICATION = import.meta.env.VITE_GOOGLE_SITE_VERIFICATION || '';
+const FB_PIXEL_ID = import.meta.env.VITE_FB_PIXEL_ID || '';
+const CUSTOM_HEAD_SCRIPTS = import.meta.env.VITE_CUSTOM_HEAD_SCRIPTS || '';
+const CUSTOM_BODY_SCRIPTS = import.meta.env.VITE_CUSTOM_BODY_SCRIPTS || '';
 
 // Journey.ai tracking configuration
 const journeyScript = {
