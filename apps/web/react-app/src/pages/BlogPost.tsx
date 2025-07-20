@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Footer } from '../components/Footer';
+import { LeaderboardAd, InArticleAd, MediumRectangleAd } from '../components/JourneyAd';
 import '../styles/blog.css';
 
 interface BlogPost {
@@ -28,6 +29,44 @@ const BlogPost: React.FC = () => {
     // Match the first <h1> tag and its content
     const h1Regex = /<h1[^>]*>.*?<\/h1>/i;
     return content.replace(h1Regex, '').trim();
+  };
+  
+  // Helper function to insert ads within article content
+  const insertAdsInContent = (content: string, slug: string): string => {
+    // Split content into paragraphs
+    const paragraphs = content.split('</p>');
+    
+    // Insert an ad after every 3-4 paragraphs
+    const adInterval = 4;
+    let adCount = 0;
+    
+    const contentWithAds = paragraphs.map((paragraph, index) => {
+      // Skip if it's just whitespace or the last item
+      if (!paragraph.trim() || index === paragraphs.length - 1) {
+        return paragraph;
+      }
+      
+      // Add the closing tag back
+      let result = paragraph + '</p>';
+      
+      // Insert ad after every adInterval paragraphs
+      if ((index + 1) % adInterval === 0 && adCount < 2) { // Max 2 in-content ads
+        adCount++;
+        result += `
+          <div class="in-article-ad-wrapper" style="margin: 2rem 0;">
+            <div id="journey-in-article-${slug}-${adCount}" 
+                 data-journey-placement-id="article-content-${adCount}"
+                 style="min-height: 250px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.375rem; display: flex; align-items: center; justify-content: center;">
+              <!-- In-article ad will be loaded here -->
+            </div>
+          </div>
+        `;
+      }
+      
+      return result;
+    }).join('');
+    
+    return contentWithAds;
   };
 
   const fetchBlogPost = async (postSlug: string) => {
@@ -112,7 +151,10 @@ const BlogPost: React.FC = () => {
       </header>
 
       <main className="max-w-4xl mx-auto px-6 py-12">
-        <article className="bg-white rounded-xl shadow-md p-8 md:p-12">
+        {/* Top Leaderboard Ad */}
+        <LeaderboardAd slotId={`article-${post.slug}-top`} />
+        
+        <article className="bg-white rounded-xl shadow-md p-8 md:p-12 mt-6">
           <header className="mb-8">
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{post.title}</h1>
             <div className="flex items-center text-sm text-gray-500">
@@ -124,8 +166,13 @@ const BlogPost: React.FC = () => {
 
           <div 
             className="prose prose-lg max-w-none blog-content"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: insertAdsInContent(post.content, post.slug) }}
           />
+          
+          {/* Bottom Medium Rectangle Ad */}
+          <div className="mt-12 flex justify-center">
+            <MediumRectangleAd slotId={`article-${post.slug}-bottom`} />
+          </div>
         </article>
       </main>
 

@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "deploy": "cd personality-spark-api && npm install && cd .. && npx wrangler deploy",
-    "install": "cd personality-spark-api && npm install"
+    "install": "cd personality-spark-api && npm install",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   }
 }

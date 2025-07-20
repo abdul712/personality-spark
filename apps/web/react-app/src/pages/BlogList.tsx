@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Footer } from '../components/Footer';
+import { LeaderboardAd, MediumRectangleAd } from '../components/JourneyAd';
 
 interface BlogPost {
   id: string;
@@ -33,7 +34,7 @@ const BlogList: React.FC = () => {
 
   const fetchBlogPosts = async () => {
     try {
-      const response = await fetch('/api/v1/blog/posts?limit=200');
+      const response = await fetch('/api/v1/blog/posts?limit=2000');
       const data = await response.json();
       if (data.posts && data.posts.length > 0) {
         setAllPosts(data.posts);
@@ -78,6 +79,9 @@ const BlogList: React.FC = () => {
           <p className="text-xl text-gray-600">Discover insights about personality, relationships, and self-discovery</p>
         </div>
 
+        {/* Top Leaderboard Ad */}
+        <LeaderboardAd slotId="blog-list-top-leaderboard" />
+
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
@@ -85,24 +89,31 @@ const BlogList: React.FC = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {displayedPosts.map((post) => (
-                <Link
-                  key={post.id}
-                  to={`/${post.slug}`}
-                  className="block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
-                >
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors line-clamp-2">
-                      {post.title}
-                    </h3>
-                    <p className="text-sm text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                    <div className="flex items-center text-xs text-gray-500">
-                      <span>{post.date}</span>
-                      <span className="mx-2">•</span>
-                      <span>{post.readTime}</span>
+              {displayedPosts.map((post, index) => (
+                <React.Fragment key={post.id}>
+                  <Link
+                    to={`/${post.slug}`}
+                    className="block bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group"
+                  >
+                    <div className="p-6">
+                      <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors line-clamp-2">
+                        {post.title}
+                      </h3>
+                      <p className="text-sm text-gray-600 mb-4 line-clamp-3">{post.excerpt}</p>
+                      <div className="flex items-center text-xs text-gray-500">
+                        <span>{post.date}</span>
+                        <span className="mx-2">•</span>
+                        <span>{post.readTime}</span>
+                      </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                  {/* Add Medium Rectangle Ad after every 8 articles */}
+                  {(index + 1) % 8 === 0 && index < displayedPosts.length - 1 && (
+                    <div className="col-span-1 sm:col-span-2 lg:col-span-4 my-4">
+                      <MediumRectangleAd slotId={`blog-list-inline-${Math.floor((index + 1) / 8)}`} />
+                    </div>
+                  )}
+                </React.Fragment>
               ))}
             </div>
             
@@ -167,6 +178,11 @@ const BlogList: React.FC = () => {
             </div>
           </>
         )}
+        
+        {/* Bottom Leaderboard Ad before footer */}
+        <div className="mt-12">
+          <LeaderboardAd slotId="blog-list-bottom-leaderboard" />
+        </div>
       </main>
 
       <Footer />

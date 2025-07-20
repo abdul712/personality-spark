@@ -83,6 +83,40 @@ app.route('/api/v1/user', userRouter);
 app.route('/api/v1/analytics', analyticsRouter);
 app.route('/api/v1/blog', blogRouter);
 
+// Explicit sitemap handling
+app.get('/sitemap*.xml', async (c) => {
+  const url = new URL(c.req.url);
+  
+  try {
+    if (!c.env.ASSETS) {
+      console.error('ASSETS binding not found');
+      return c.text('ASSETS binding not configured', 500);
+    }
+    
+    const assetRequest = new Request(url.toString(), c.req.raw);
+    const response = await c.env.ASSETS.fetch(assetRequest);
+    
+    if (response.status === 200) {
+      // Set proper headers for XML sitemap
+      return new Response(response.body, {
+        status: 200,
+        headers: {
+          'content-type': 'application/xml;charset=UTF-8',
+          'cache-control': 'public, max-age=3600', // Cache for 1 hour
+          'x-robots-tag': 'noindex', // Sitemaps shouldn't be indexed themselves
+        },
+      });
+    }
+    
+    return c.text('Sitemap not found', 404);
+  } catch (e) {
+    return c.json({
+      error: 'Internal Server Error',
+      message: 'Failed to serve sitemap',
+    }, 500);
+  }
+});
+
 // Serve static files for non-API routes
 app.get('*', async (c) => {
   const url = new URL(c.req.url);
@@ -146,14 +180,29 @@ app.get('*', async (c) => {
       return c.text('Not Found', 404);
     }
     
-    // Add cache headers for static assets
+    // Add cache headers and correct content types for static assets
     if (response.status === 200) {
       const hasFileExtension = /\.[a-zA-Z0-9]+$/.test(url.pathname);
       if (hasFileExtension) {
         // Clone response and add cache headers for static assets
         const headers = new Headers(response.headers);
-        // Cache static assets for 1 day
-        headers.set('cache-control', 'public, max-age=86400');
+        
+        // Set correct Content-Type for XML files (sitemaps)
+        if (url.pathname.endsWith('.xml')) {
+          headers.set('content-type', 'application/xml;charset=UTF-8');
+        }
+        
+        // Cache static assets
+        if (url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i)) {
+          // Cache static assets for 1 day
+          headers.set('cache-control', 'public, max-age=86400');
+        } else if (url.pathname.endsWith('.xml')) {
+          // Cache XML files (sitemaps) for 1 hour
+          headers.set('cache-control', 'public, max-age=3600');
+        } else {
+          // Default cache for other files
+          headers.set('cache-control', 'public, max-age=3600');
+        }
         
         return new Response(response.body, {
           status: response.status,
