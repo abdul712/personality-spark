@@ -23,11 +23,22 @@ const BlogPost: React.FC = () => {
     }
   }, [slug]);
 
+  // Helper function to strip the first <h1> tag from content
+  const stripFirstH1 = (content: string): string => {
+    // Match the first <h1> tag and its content
+    const h1Regex = /<h1[^>]*>.*?<\/h1>/i;
+    return content.replace(h1Regex, '').trim();
+  };
+
   const fetchBlogPost = async (postSlug: string) => {
     try {
       const response = await fetch(`/api/v1/blog/posts/${postSlug}`);
       if (response.ok) {
         const data = await response.json();
+        // Strip the first h1 from content
+        if (data.content) {
+          data.content = stripFirstH1(data.content);
+        }
         setPost(data);
       } else {
         // Fallback to static data
@@ -35,6 +46,10 @@ const BlogPost: React.FC = () => {
         const fallbackData = await fallbackResponse.json();
         const foundPost = fallbackData.posts.find((p: BlogPost) => p.slug === postSlug);
         if (foundPost) {
+          // Strip the first h1 from content
+          if (foundPost.content) {
+            foundPost.content = stripFirstH1(foundPost.content);
+          }
           setPost(foundPost);
         }
       }
@@ -46,6 +61,10 @@ const BlogPost: React.FC = () => {
         const fallbackData = await fallbackResponse.json();
         const foundPost = fallbackData.posts.find((p: BlogPost) => p.slug === postSlug);
         if (foundPost) {
+          // Strip the first h1 from content
+          if (foundPost.content) {
+            foundPost.content = stripFirstH1(foundPost.content);
+          }
           setPost(foundPost);
         }
       } catch (fallbackError) {
