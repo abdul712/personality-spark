@@ -12,6 +12,7 @@ import { aiRouter } from './routes/ai';
 import { shareRouter } from './routes/share';
 import { userRouter } from './routes/user';
 import { analyticsRouter } from './routes/analytics';
+import { blogRouter } from './routes/blog';
 
 // Import middleware
 import { errorHandler } from './middleware/error';
@@ -80,6 +81,7 @@ app.route('/api/v1/ai', aiRouter);
 app.route('/api/v1/share', shareRouter);
 app.route('/api/v1/user', userRouter);
 app.route('/api/v1/analytics', analyticsRouter);
+app.route('/api/v1/blog', blogRouter);
 
 // Serve static files for non-API routes
 app.get('*', async (c) => {

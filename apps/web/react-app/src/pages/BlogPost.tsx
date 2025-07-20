@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import Footer from '../components/Footer';
+import { Footer } from '../components/Footer';
 import '../styles/blog.css';
 
 interface BlogPost {
@@ -25,14 +25,32 @@ const BlogPost: React.FC = () => {
 
   const fetchBlogPost = async (postSlug: string) => {
     try {
-      const response = await fetch('/blog-data.json');
-      const data = await response.json();
-      const foundPost = data.posts.find((p: BlogPost) => p.slug === postSlug);
-      if (foundPost) {
-        setPost(foundPost);
+      const response = await fetch(`/api/v1/blog/posts/${postSlug}`);
+      if (response.ok) {
+        const data = await response.json();
+        setPost(data);
+      } else {
+        // Fallback to static data
+        const fallbackResponse = await fetch('/blog-data.json');
+        const fallbackData = await fallbackResponse.json();
+        const foundPost = fallbackData.posts.find((p: BlogPost) => p.slug === postSlug);
+        if (foundPost) {
+          setPost(foundPost);
+        }
       }
     } catch (error) {
       console.error('Error fetching blog post:', error);
+      // Try fallback
+      try {
+        const fallbackResponse = await fetch('/blog-data.json');
+        const fallbackData = await fallbackResponse.json();
+        const foundPost = fallbackData.posts.find((p: BlogPost) => p.slug === postSlug);
+        if (foundPost) {
+          setPost(foundPost);
+        }
+      } catch (fallbackError) {
+        console.error('Error fetching fallback data:', fallbackError);
+      }
     } finally {
       setLoading(false);
     }

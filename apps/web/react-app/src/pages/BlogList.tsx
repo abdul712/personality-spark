@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Footer from '../components/Footer';
+import { Footer } from '../components/Footer';
 
 interface BlogPost {
   id: string;
@@ -21,11 +21,19 @@ const BlogList: React.FC = () => {
 
   const fetchBlogPosts = async () => {
     try {
-      const response = await fetch('/blog-data.json');
+      const response = await fetch('/api/v1/blog/posts?limit=20');
       const data = await response.json();
-      setPosts(data.posts.slice(0, 20)); // Show first 20 posts
+      setPosts(data.posts || []);
     } catch (error) {
       console.error('Error fetching blog posts:', error);
+      // Fallback to static data
+      try {
+        const fallbackResponse = await fetch('/blog-data.json');
+        const fallbackData = await fallbackResponse.json();
+        setPosts(fallbackData.posts.slice(0, 20));
+      } catch (fallbackError) {
+        console.error('Error fetching fallback data:', fallbackError);
+      }
     } finally {
       setLoading(false);
     }
@@ -61,7 +69,7 @@ const BlogList: React.FC = () => {
             {posts.map((post) => (
               <Link
                 key={post.id}
-                to={`/blog/${post.slug}`}
+                to={`/${post.slug}`}
                 className="block bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow p-8"
               >
                 <h2 className="text-2xl font-bold text-gray-800 mb-3 hover:text-purple-600 transition-colors">

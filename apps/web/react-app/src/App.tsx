@@ -15,7 +15,7 @@ function App() {
         <Route path="/quiz/:quizType" element={<Quiz />} />
         <Route path="/result/:resultId" element={<Result />} />
         <Route path="/blog" element={<BlogList />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/:slug" element={<BlogPost />} />
       </Routes>
     </Router>
   );

@@ -1,8 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '/api/v1' 
-  : 'http://localhost:8000/api/v1';
+const API_BASE_URL = '/api/v1';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -80,4 +78,22 @@ export const shareService = {
   },
 };
 
+export const blogService = {
+  async getBlogPosts(page: number = 1, limit: number = 20) {
+    const response = await api.get('/blog/posts', { params: { page, limit } });
+    return response.data;
+  },
+
+  async getBlogPost(slug: string) {
+    const response = await api.get(`/blog/posts/${slug}`);
+    return response.data;
+  },
+
+  async getRelatedPosts(slug: string, limit: number = 5) {
+    const response = await api.get(`/blog/posts/${slug}/related`, { params: { limit } });
+    return response.data;
+  },
+};
+
 export default api;
+export { api };
