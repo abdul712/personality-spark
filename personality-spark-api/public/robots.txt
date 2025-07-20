@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://personalityspark.com/sitemap-index.xml
+Sitemap: https://personality-spark-api.mabdulrahim.workers.dev/sitemap.xml
 
 # Block access to API endpoints from crawlers
 Disallow: /api/

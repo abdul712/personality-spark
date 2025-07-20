@@ -130,7 +130,7 @@ function loadBlogUrls() {
     console.log(`✓ Loaded ${blogData.posts.length} blog posts`);
     
     return blogData.posts.map(post => ({
-      loc: `/blog/${post.slug}`,
+      loc: `/${post.slug}`,
       lastmod: post.date || new Date().toISOString(),
       ...PAGE_CONFIG.blog
     }));

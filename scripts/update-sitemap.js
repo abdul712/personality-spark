@@ -1,73 +1,22 @@
-const fs = require('fs');
+#!/usr/bin/env node
+
+const { execSync } = require('child_process');
 const path = require('path');
 
-// Function to generate sitemap XML
-function generateSitemap(posts) {
-  const baseUrl = 'https://personalityspark.com';
-  const currentDate = new Date().toISOString().split('T')[0];
-  
-  let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
-  xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-  
-  // Add homepage
-  xml += '  <url>\n';
-  xml += `    <loc>${baseUrl}/</loc>\n`;
-  xml += `    <lastmod>${currentDate}</lastmod>\n`;
-  xml += '    <changefreq>daily</changefreq>\n';
-  xml += '    <priority>1.0</priority>\n';
-  xml += '  </url>\n';
-  
-  // Add blog listing page
-  xml += '  <url>\n';
-  xml += `    <loc>${baseUrl}/blog</loc>\n`;
-  xml += `    <lastmod>${currentDate}</lastmod>\n`;
-  xml += '    <changefreq>daily</changefreq>\n';
-  xml += '    <priority>0.9</priority>\n';
-  xml += '  </url>\n';
-  
-  // Add all blog posts
-  posts.forEach(post => {
-    xml += '  <url>\n';
-    xml += `    <loc>${baseUrl}/blog/${post.slug}</loc>\n`;
-    xml += `    <lastmod>${currentDate}</lastmod>\n`;
-    xml += '    <changefreq>weekly</changefreq>\n';
-    xml += '    <priority>0.8</priority>\n';
-    xml += '  </url>\n';
-  });
-  
-  // Add other static pages
-  const staticPages = ['about', 'privacy', 'terms'];
-  staticPages.forEach(page => {
-    xml += '  <url>\n';
-    xml += `    <loc>${baseUrl}/${page}</loc>\n`;
-    xml += `    <lastmod>${currentDate}</lastmod>\n`;
-    xml += '    <changefreq>monthly</changefreq>\n';
-    xml += '    <priority>0.5</priority>\n';
-    xml += '  </url>\n';
-  });
-  
-  xml += '</urlset>';
-  
-  return xml;
-}
+console.log('🚀 Updating sitemap with new URL structure...\n');
 
-// Main function
-function main() {
-  const blogDataPath = '/Users/abdulrahim/GitHub Projects/personality-spark/personality-spark-api/public/blog-data.json';
-  const sitemapPath = '/Users/abdulrahim/GitHub Projects/personality-spark/personality-spark-api/public/sitemap.xml';
+try {
+  // Run the generate-sitemap script
+  const scriptPath = path.join(__dirname, 'generate-sitemap.js');
+  execSync(`node "${scriptPath}"`, { stdio: 'inherit' });
   
-  // Read blog data
-  const blogData = JSON.parse(fs.readFileSync(blogDataPath, 'utf8'));
-  console.log(`Found ${blogData.posts.length} articles`);
-  
-  // Generate sitemap
-  const sitemap = generateSitemap(blogData.posts);
-  
-  // Write sitemap
-  fs.writeFileSync(sitemapPath, sitemap);
-  console.log(`Sitemap updated with ${blogData.posts.length + 5} URLs`);
-  console.log(`Sitemap saved to: ${sitemapPath}`);
+  console.log('\n✅ Sitemap updated successfully!');
+  console.log('\n📍 Next steps:');
+  console.log('1. Commit and push the updated sitemap files');
+  console.log('2. The changes will be automatically deployed via Cloudflare');
+  console.log('3. Submit the updated sitemap to Google Search Console');
+  console.log('4. Set up 301 redirects from /blog/* to /* URLs (if needed)');
+} catch (error) {
+  console.error('❌ Error updating sitemap:', error.message);
+  process.exit(1);
 }
-
-// Run the script
-main();
