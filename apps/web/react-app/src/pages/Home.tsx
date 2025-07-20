@@ -36,6 +36,32 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Navigation Header */}
+      <header className="relative z-20 bg-white/80 backdrop-blur-sm shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-4">
+          <nav className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">✨</span>
+              <span className="text-xl font-bold text-purple-600">PersonalitySpark</span>
+            </div>
+            <div className="flex items-center space-x-6">
+              <button 
+                onClick={() => navigate('/quiz-list')}
+                className="text-gray-600 hover:text-purple-600 transition-colors"
+              >
+                Quizzes
+              </button>
+              <button 
+                onClick={() => navigate('/blog')}
+                className="text-gray-600 hover:text-purple-600 transition-colors"
+              >
+                Blog
+              </button>
+            </div>
+          </nav>
+        </div>
+      </header>
+
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Animated gradient background */}
