@@ -5,10 +5,12 @@ import Quiz from './pages/Quiz';
 import Result from './pages/Result';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
+import { TrackingScripts } from './components/TrackingScripts';
 
 function App() {
   return (
     <Router>
+      <TrackingScripts />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/quiz-list" element={<QuizList />} />

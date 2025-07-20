@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://personality-spark-api.mabdulrahim.workers.dev/sitemap.xml
+
+# Block access to API endpoints from crawlers
+Disallow: /api/
+
+# Allow search engines to index all content
+Allow: /blog
+Allow: /quiz/
+Allow: /*.html$
+Allow: /*.htm$
+
+# Crawl delay (in seconds)
+Crawl-delay: 1
