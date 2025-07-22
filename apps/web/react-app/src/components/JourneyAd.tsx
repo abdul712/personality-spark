@@ -1,109 +1,60 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 
-interface JourneyAdProps {
-  slotId: string;
-  format?: 'display' | 'native' | 'video';
+/**
+ * IMPORTANT: Journey by Mediavine does NOT support manual ad placement.
+ * 
+ * According to their documentation:
+ * - Journey automatically places ads only on blog posts/long-form content
+ * - No manual or custom ad placement is available at this time
+ * - The script automatically handles all ad placement and optimization
+ * - Only the Universal Video Player and adhesion banner will show on homepages
+ * 
+ * This component serves as a placeholder/notice about Journey's limitations.
+ * For actual ad display, Journey will automatically insert ads into your blog content.
+ */
+
+interface JourneyAdPlaceholderProps {
   className?: string;
-  style?: React.CSSProperties;
+  showNotice?: boolean;
 }
 
-declare global {
-  interface Window {
-    Journey: any;
-    journey: (...args: any[]) => void;
-  }
-}
-
-export const JourneyAd: React.FC<JourneyAdProps> = ({ 
-  slotId, 
-  format = 'display',
+export const JourneyAdPlaceholder: React.FC<JourneyAdPlaceholderProps> = ({ 
   className = '',
-  style = {}
+  showNotice = false
 }) => {
-  const adRef = useRef<HTMLDivElement>(null);
-  const isAdLoaded = useRef(false);
+  if (!showNotice) {
+    // Return empty component - Journey will handle ad placement automatically
+    return null;
+  }
 
-  useEffect(() => {
-    // Only load ad once per component instance
-    if (!isAdLoaded.current && adRef.current) {
-      isAdLoaded.current = true;
-      
-      // Wait for Journey to be available
-      const loadAd = () => {
-        if (window.journey) {
-          // Create ad placement
-          window.journey('createPlacement', {
-            placementId: slotId,
-            element: adRef.current,
-            type: format,
-            // Additional options
-            responsive: true,
-            refresh: 30 // Refresh ad every 30 seconds
-          });
-        } else {
-          // If Journey isn't loaded yet, try again
-          setTimeout(loadAd, 100);
-        }
-      };
-      
-      loadAd();
-    }
-    
-    // Cleanup function
-    return () => {
-      if (window.journey && isAdLoaded.current) {
-        window.journey('destroyPlacement', slotId);
-      }
-    };
-  }, [slotId, format]);
-
+  // Development/debugging notice
   return (
     <div 
-      ref={adRef}
-      id={`journey-ad-${slotId}`}
-      className={`journey-ad-container ${className}`}
+      className={`journey-ad-notice ${className}`}
       style={{
         margin: '20px 0',
-        minHeight: format === 'display' ? '250px' : '100px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f9fafb',
-        border: '1px solid #e5e7eb',
+        padding: '15px',
+        backgroundColor: '#f3f4f6',
+        border: '1px dashed #9ca3af',
         borderRadius: '0.375rem',
-        ...style
+        textAlign: 'center',
+        fontSize: '14px',
+        color: '#6b7280'
       }}
-      data-journey-placement-id={slotId}
     >
-      {/* Ad will be loaded here by Journey */}
+      <p style={{ margin: 0 }}>
+        <strong>Journey by Mediavine Ad Space</strong><br />
+        <small>Ads will automatically appear in blog posts only. Manual placement not supported.</small>
+      </p>
     </div>
   );
 };
 
-// Convenience components for common ad formats
-export const LeaderboardAd: React.FC<{ slotId: string; className?: string }> = ({ slotId, className }) => (
-  <JourneyAd 
-    slotId={slotId} 
-    format="display"
-    className={className}
-    style={{ minHeight: '90px', maxWidth: '728px', margin: '20px auto' }}
-  />
-);
-
-export const MediumRectangleAd: React.FC<{ slotId: string; className?: string }> = ({ slotId, className }) => (
-  <JourneyAd 
-    slotId={slotId} 
-    format="display"
-    className={className}
-    style={{ minHeight: '250px', maxWidth: '300px', margin: '20px auto' }}
-  />
-);
-
-export const InArticleAd: React.FC<{ slotId: string; className?: string }> = ({ slotId, className }) => (
-  <JourneyAd 
-    slotId={slotId} 
-    format="native"
-    className={className}
-    style={{ margin: '30px 0' }}
-  />
-);
+/**
+ * Legacy exports for backward compatibility
+ * These components won't actually display ads since Journey doesn't support manual placement
+ */
+export const JourneyAd = JourneyAdPlaceholder;
+export const LeaderboardAd = JourneyAdPlaceholder;
+export const MediumRectangleAd = JourneyAdPlaceholder;
+export const InArticleAd = JourneyAdPlaceholder;
