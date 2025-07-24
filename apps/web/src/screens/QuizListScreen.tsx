@@ -83,6 +83,66 @@ const quizCategories: QuizCategory[] = [
     duration: '4-6 mins',
     questions: 20,
     difficulty: 'Hard'
+  },
+  {
+    id: 'relationship',
+    title: 'Relationship Style',
+    description: 'Discover your relationship patterns and compatibility factors',
+    icon: 'heart',
+    color: 'red',
+    duration: '4-5 mins',
+    questions: 15,
+    difficulty: 'Medium'
+  },
+  {
+    id: 'emotional_intelligence',
+    title: 'Emotional IQ',
+    description: 'Measure your ability to understand and manage emotions',
+    icon: 'brain',
+    color: 'purple',
+    duration: '5-6 mins',
+    questions: 20,
+    difficulty: 'Hard'
+  },
+  {
+    id: 'leadership',
+    title: 'Leadership Style',
+    description: 'Uncover your natural leadership approach and strengths',
+    icon: 'award',
+    color: 'blue',
+    duration: '4-5 mins',
+    questions: 18,
+    difficulty: 'Medium'
+  },
+  {
+    id: 'creativity',
+    title: 'Creativity Index',
+    description: 'Explore your creative potential and innovative thinking',
+    icon: 'palette',
+    color: 'pink',
+    duration: '3-4 mins',
+    questions: 12,
+    difficulty: 'Easy'
+  },
+  {
+    id: 'stress_response',
+    title: 'Stress Profile',
+    description: 'Understand how you naturally respond to stress',
+    icon: 'activity',
+    color: 'orange',
+    duration: '3-4 mins',
+    questions: 15,
+    difficulty: 'Medium'
+  },
+  {
+    id: 'social_style',
+    title: 'Social Style',
+    description: 'Discover your unique social interaction patterns',
+    icon: 'users',
+    color: 'green',
+    duration: '4-5 mins',
+    questions: 16,
+    difficulty: 'Easy'
   }
 ];
 
@@ -190,7 +250,7 @@ const QuizListScreen: React.FC<QuizListScreenProps> = ({ navigation }) => {
           Personality Quizzes
         </Text>
         <Text className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-          Each quiz is uniquely generated just for you by our AI engine
+          12 unique personality assessments, each AI-powered for personalized insights
         </Text>
       </Animated.View>
 

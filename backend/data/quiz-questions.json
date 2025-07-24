@@ -1,0 +1,733 @@
+{
+  "big5": {
+    "title": "Big 5 Personality Assessment",
+    "description": "Discover your personality across the five major dimensions: Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism",
+    "questions": [
+      {
+        "id": 1,
+        "text": "I enjoy being the center of attention at social gatherings.",
+        "category": "extraversion",
+        "options": [
+          { "text": "Strongly agree", "value": "a", "trait_scores": { "extraversion": 1.0 } },
+          { "text": "Somewhat agree", "value": "b", "trait_scores": { "extraversion": 0.7 } },
+          { "text": "Somewhat disagree", "value": "c", "trait_scores": { "extraversion": 0.3 } },
+          { "text": "Strongly disagree", "value": "d", "trait_scores": { "extraversion": 0.0 } }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "I prefer to have a detailed plan before starting any project.",
+        "category": "conscientiousness",
+        "options": [
+          { "text": "Always true", "value": "a", "trait_scores": { "conscientiousness": 1.0 } },
+          { "text": "Often true", "value": "b", "trait_scores": { "conscientiousness": 0.7 } },
+          { "text": "Sometimes true", "value": "c", "trait_scores": { "conscientiousness": 0.4 } },
+          { "text": "Rarely true", "value": "d", "trait_scores": { "conscientiousness": 0.1 } }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "I find it easy to empathize with others' feelings.",
+        "category": "agreeableness",
+        "options": [
+          { "text": "Very easy", "value": "a", "trait_scores": { "agreeableness": 1.0 } },
+          { "text": "Somewhat easy", "value": "b", "trait_scores": { "agreeableness": 0.7 } },
+          { "text": "Somewhat difficult", "value": "c", "trait_scores": { "agreeableness": 0.3 } },
+          { "text": "Very difficult", "value": "d", "trait_scores": { "agreeableness": 0.0 } }
+        ]
+      },
+      {
+        "id": 4,
+        "text": "I often worry about things that might go wrong.",
+        "category": "neuroticism",
+        "options": [
+          { "text": "Very frequently", "value": "a", "trait_scores": { "neuroticism": 1.0 } },
+          { "text": "Frequently", "value": "b", "trait_scores": { "neuroticism": 0.7 } },
+          { "text": "Occasionally", "value": "c", "trait_scores": { "neuroticism": 0.4 } },
+          { "text": "Rarely", "value": "d", "trait_scores": { "neuroticism": 0.1 } }
+        ]
+      },
+      {
+        "id": 5,
+        "text": "I enjoy exploring new ideas and unconventional approaches.",
+        "category": "openness",
+        "options": [
+          { "text": "Love it", "value": "a", "trait_scores": { "openness": 1.0 } },
+          { "text": "Like it", "value": "b", "trait_scores": { "openness": 0.7 } },
+          { "text": "Neutral", "value": "c", "trait_scores": { "openness": 0.4 } },
+          { "text": "Prefer traditional ways", "value": "d", "trait_scores": { "openness": 0.1 } }
+        ]
+      },
+      {
+        "id": 6,
+        "text": "In group settings, I tend to take charge and lead discussions.",
+        "category": "extraversion",
+        "options": [
+          { "text": "Almost always", "value": "a", "trait_scores": { "extraversion": 1.0 } },
+          { "text": "Often", "value": "b", "trait_scores": { "extraversion": 0.7 } },
+          { "text": "Sometimes", "value": "c", "trait_scores": { "extraversion": 0.4 } },
+          { "text": "Rarely or never", "value": "d", "trait_scores": { "extraversion": 0.1 } }
+        ]
+      },
+      {
+        "id": 7,
+        "text": "My workspace is typically organized and tidy.",
+        "category": "conscientiousness",
+        "options": [
+          { "text": "Always organized", "value": "a", "trait_scores": { "conscientiousness": 1.0 } },
+          { "text": "Usually organized", "value": "b", "trait_scores": { "conscientiousness": 0.7 } },
+          { "text": "Sometimes messy", "value": "c", "trait_scores": { "conscientiousness": 0.3 } },
+          { "text": "Often chaotic", "value": "d", "trait_scores": { "conscientiousness": 0.0 } }
+        ]
+      },
+      {
+        "id": 8,
+        "text": "I trust others easily and assume the best in people.",
+        "category": "agreeableness",
+        "options": [
+          { "text": "Strongly agree", "value": "a", "trait_scores": { "agreeableness": 1.0 } },
+          { "text": "Agree", "value": "b", "trait_scores": { "agreeableness": 0.7 } },
+          { "text": "Disagree", "value": "c", "trait_scores": { "agreeableness": 0.3 } },
+          { "text": "Strongly disagree", "value": "d", "trait_scores": { "agreeableness": 0.0 } }
+        ]
+      },
+      {
+        "id": 9,
+        "text": "I remain calm under pressure and rarely feel stressed.",
+        "category": "neuroticism",
+        "options": [
+          { "text": "Always calm", "value": "a", "trait_scores": { "neuroticism": 0.0 } },
+          { "text": "Usually calm", "value": "b", "trait_scores": { "neuroticism": 0.3 } },
+          { "text": "Sometimes stressed", "value": "c", "trait_scores": { "neuroticism": 0.7 } },
+          { "text": "Often stressed", "value": "d", "trait_scores": { "neuroticism": 1.0 } }
+        ]
+      },
+      {
+        "id": 10,
+        "text": "I appreciate art, music, and creative expressions deeply.",
+        "category": "openness",
+        "options": [
+          { "text": "Passionate about them", "value": "a", "trait_scores": { "openness": 1.0 } },
+          { "text": "Enjoy them", "value": "b", "trait_scores": { "openness": 0.7 } },
+          { "text": "Somewhat interested", "value": "c", "trait_scores": { "openness": 0.4 } },
+          { "text": "Not particularly interested", "value": "d", "trait_scores": { "openness": 0.1 } }
+        ]
+      },
+      {
+        "id": 11,
+        "text": "After a long week, I prefer to spend time with friends rather than alone.",
+        "category": "extraversion",
+        "options": [
+          { "text": "Always with friends", "value": "a", "trait_scores": { "extraversion": 1.0 } },
+          { "text": "Usually with friends", "value": "b", "trait_scores": { "extraversion": 0.7 } },
+          { "text": "Mix of both", "value": "c", "trait_scores": { "extraversion": 0.5 } },
+          { "text": "Prefer alone time", "value": "d", "trait_scores": { "extraversion": 0.2 } }
+        ]
+      },
+      {
+        "id": 12,
+        "text": "I meet deadlines consistently and rarely procrastinate.",
+        "category": "conscientiousness",
+        "options": [
+          { "text": "Always on time", "value": "a", "trait_scores": { "conscientiousness": 1.0 } },
+          { "text": "Usually on time", "value": "b", "trait_scores": { "conscientiousness": 0.7 } },
+          { "text": "Sometimes late", "value": "c", "trait_scores": { "conscientiousness": 0.4 } },
+          { "text": "Often procrastinate", "value": "d", "trait_scores": { "conscientiousness": 0.1 } }
+        ]
+      },
+      {
+        "id": 13,
+        "text": "I avoid confrontation even when I disagree strongly.",
+        "category": "agreeableness",
+        "options": [
+          { "text": "Always avoid", "value": "a", "trait_scores": { "agreeableness": 1.0 } },
+          { "text": "Usually avoid", "value": "b", "trait_scores": { "agreeableness": 0.7 } },
+          { "text": "Sometimes confront", "value": "c", "trait_scores": { "agreeableness": 0.4 } },
+          { "text": "Often confront", "value": "d", "trait_scores": { "agreeableness": 0.1 } }
+        ]
+      },
+      {
+        "id": 14,
+        "text": "I feel anxious or nervous in new situations.",
+        "category": "neuroticism",
+        "options": [
+          { "text": "Very anxious", "value": "a", "trait_scores": { "neuroticism": 1.0 } },
+          { "text": "Somewhat anxious", "value": "b", "trait_scores": { "neuroticism": 0.7 } },
+          { "text": "Slightly nervous", "value": "c", "trait_scores": { "neuroticism": 0.4 } },
+          { "text": "Confident and calm", "value": "d", "trait_scores": { "neuroticism": 0.1 } }
+        ]
+      },
+      {
+        "id": 15,
+        "text": "I enjoy philosophical discussions and abstract concepts.",
+        "category": "openness",
+        "options": [
+          { "text": "Love them", "value": "a", "trait_scores": { "openness": 1.0 } },
+          { "text": "Enjoy them", "value": "b", "trait_scores": { "openness": 0.7 } },
+          { "text": "Tolerate them", "value": "c", "trait_scores": { "openness": 0.4 } },
+          { "text": "Avoid them", "value": "d", "trait_scores": { "openness": 0.1 } }
+        ]
+      },
+      {
+        "id": 16,
+        "text": "I feel energized after attending social events.",
+        "category": "extraversion",
+        "options": [
+          { "text": "Always energized", "value": "a", "trait_scores": { "extraversion": 1.0 } },
+          { "text": "Usually energized", "value": "b", "trait_scores": { "extraversion": 0.7 } },
+          { "text": "Sometimes drained", "value": "c", "trait_scores": { "extraversion": 0.3 } },
+          { "text": "Usually exhausted", "value": "d", "trait_scores": { "extraversion": 0.0 } }
+        ]
+      },
+      {
+        "id": 17,
+        "text": "I make lists and follow structured routines.",
+        "category": "conscientiousness",
+        "options": [
+          { "text": "Always", "value": "a", "trait_scores": { "conscientiousness": 1.0 } },
+          { "text": "Often", "value": "b", "trait_scores": { "conscientiousness": 0.7 } },
+          { "text": "Sometimes", "value": "c", "trait_scores": { "conscientiousness": 0.4 } },
+          { "text": "Rarely", "value": "d", "trait_scores": { "conscientiousness": 0.1 } }
+        ]
+      },
+      {
+        "id": 18,
+        "text": "I put others' needs before my own.",
+        "category": "agreeableness",
+        "options": [
+          { "text": "Almost always", "value": "a", "trait_scores": { "agreeableness": 1.0 } },
+          { "text": "Often", "value": "b", "trait_scores": { "agreeableness": 0.7 } },
+          { "text": "Sometimes", "value": "c", "trait_scores": { "agreeableness": 0.5 } },
+          { "text": "Rarely", "value": "d", "trait_scores": { "agreeableness": 0.2 } }
+        ]
+      },
+      {
+        "id": 19,
+        "text": "My mood changes frequently throughout the day.",
+        "category": "neuroticism",
+        "options": [
+          { "text": "Very frequently", "value": "a", "trait_scores": { "neuroticism": 1.0 } },
+          { "text": "Often", "value": "b", "trait_scores": { "neuroticism": 0.7 } },
+          { "text": "Sometimes", "value": "c", "trait_scores": { "neuroticism": 0.4 } },
+          { "text": "Rarely", "value": "d", "trait_scores": { "neuroticism": 0.1 } }
+        ]
+      },
+      {
+        "id": 20,
+        "text": "I seek out new experiences and adventures.",
+        "category": "openness",
+        "options": [
+          { "text": "Constantly", "value": "a", "trait_scores": { "openness": 1.0 } },
+          { "text": "Frequently", "value": "b", "trait_scores": { "openness": 0.7 } },
+          { "text": "Occasionally", "value": "c", "trait_scores": { "openness": 0.4 } },
+          { "text": "Prefer familiar things", "value": "d", "trait_scores": { "openness": 0.1 } }
+        ]
+      },
+      {
+        "id": 21,
+        "text": "I enjoy meeting new people and making connections.",
+        "category": "extraversion",
+        "options": [
+          { "text": "Love it", "value": "a", "trait_scores": { "extraversion": 1.0 } },
+          { "text": "Enjoy it", "value": "b", "trait_scores": { "extraversion": 0.7 } },
+          { "text": "It's okay", "value": "c", "trait_scores": { "extraversion": 0.4 } },
+          { "text": "Prefer to avoid it", "value": "d", "trait_scores": { "extraversion": 0.1 } }
+        ]
+      },
+      {
+        "id": 22,
+        "text": "I pay attention to small details in my work.",
+        "category": "conscientiousness",
+        "options": [
+          { "text": "Always meticulous", "value": "a", "trait_scores": { "conscientiousness": 1.0 } },
+          { "text": "Usually careful", "value": "b", "trait_scores": { "conscientiousness": 0.7 } },
+          { "text": "Sometimes miss details", "value": "c", "trait_scores": { "conscientiousness": 0.4 } },
+          { "text": "Focus on big picture only", "value": "d", "trait_scores": { "conscientiousness": 0.2 } }
+        ]
+      },
+      {
+        "id": 23,
+        "text": "I forgive others easily when they hurt me.",
+        "category": "agreeableness",
+        "options": [
+          { "text": "Always forgive", "value": "a", "trait_scores": { "agreeableness": 1.0 } },
+          { "text": "Usually forgive", "value": "b", "trait_scores": { "agreeableness": 0.7 } },
+          { "text": "Sometimes hold grudges", "value": "c", "trait_scores": { "agreeableness": 0.4 } },
+          { "text": "Rarely forgive", "value": "d", "trait_scores": { "agreeableness": 0.1 } }
+        ]
+      },
+      {
+        "id": 24,
+        "text": "I feel overwhelmed by strong emotions.",
+        "category": "neuroticism",
+        "options": [
+          { "text": "Very often", "value": "a", "trait_scores": { "neuroticism": 1.0 } },
+          { "text": "Often", "value": "b", "trait_scores": { "neuroticism": 0.7 } },
+          { "text": "Sometimes", "value": "c", "trait_scores": { "neuroticism": 0.4 } },
+          { "text": "Rarely", "value": "d", "trait_scores": { "neuroticism": 0.1 } }
+        ]
+      },
+      {
+        "id": 25,
+        "text": "I question traditional ways of doing things.",
+        "category": "openness",
+        "options": [
+          { "text": "Always questioning", "value": "a", "trait_scores": { "openness": 1.0 } },
+          { "text": "Often question", "value": "b", "trait_scores": { "openness": 0.7 } },
+          { "text": "Sometimes question", "value": "c", "trait_scores": { "openness": 0.5 } },
+          { "text": "Accept traditions", "value": "d", "trait_scores": { "openness": 0.2 } }
+        ]
+      }
+    ]
+  },
+  "daily": {
+    "title": "Daily Personality Challenge",
+    "description": "Today's unique personality puzzle designed just for you",
+    "questions": [
+      {
+        "id": 1,
+        "text": "This morning, your ideal start would be:",
+        "category": "daily_mood",
+        "options": [
+          { "text": "Quiet meditation and journaling", "value": "a", "trait_scores": { "introspection": 1.0, "mindfulness": 0.8 } },
+          { "text": "Energetic workout or run", "value": "b", "trait_scores": { "energy": 1.0, "discipline": 0.7 } },
+          { "text": "Coffee with friends or family", "value": "c", "trait_scores": { "social": 1.0, "warmth": 0.8 } },
+          { "text": "Diving straight into projects", "value": "d", "trait_scores": { "productivity": 1.0, "focus": 0.8 } }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "If today was a color, it would be:",
+        "category": "daily_mood",
+        "options": [
+          { "text": "Bright yellow - sunny and optimistic", "value": "a", "trait_scores": { "optimism": 1.0, "energy": 0.8 } },
+          { "text": "Deep blue - calm and thoughtful", "value": "b", "trait_scores": { "calmness": 1.0, "depth": 0.8 } },
+          { "text": "Vibrant red - passionate and bold", "value": "c", "trait_scores": { "passion": 1.0, "assertiveness": 0.8 } },
+          { "text": "Soft green - balanced and growing", "value": "d", "trait_scores": { "balance": 1.0, "growth": 0.8 } }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Your energy level right now feels like:",
+        "category": "daily_energy",
+        "options": [
+          { "text": "A rocket ready to launch", "value": "a", "trait_scores": { "high_energy": 1.0, "enthusiasm": 0.9 } },
+          { "text": "A steady flowing river", "value": "b", "trait_scores": { "balanced_energy": 1.0, "consistency": 0.8 } },
+          { "text": "A cozy fireplace", "value": "c", "trait_scores": { "relaxed_energy": 1.0, "contentment": 0.8 } },
+          { "text": "A hibernating bear", "value": "d", "trait_scores": { "low_energy": 1.0, "rest_need": 0.9 } }
+        ]
+      },
+      {
+        "id": 4,
+        "text": "Today's biggest challenge would be best solved by:",
+        "category": "daily_approach",
+        "options": [
+          { "text": "Breaking it into tiny steps", "value": "a", "trait_scores": { "analytical": 1.0, "methodical": 0.8 } },
+          { "text": "Getting creative and trying something new", "value": "b", "trait_scores": { "creativity": 1.0, "innovation": 0.8 } },
+          { "text": "Collaborating with others", "value": "c", "trait_scores": { "collaboration": 1.0, "teamwork": 0.8 } },
+          { "text": "Taking a break and coming back fresh", "value": "d", "trait_scores": { "patience": 1.0, "self_care": 0.8 } }
+        ]
+      },
+      {
+        "id": 5,
+        "text": "Right now, you're most grateful for:",
+        "category": "daily_gratitude",
+        "options": [
+          { "text": "Personal growth and learning", "value": "a", "trait_scores": { "growth_mindset": 1.0, "self_improvement": 0.8 } },
+          { "text": "Relationships and connections", "value": "b", "trait_scores": { "relationship_focused": 1.0, "empathy": 0.8 } },
+          { "text": "Achievements and progress", "value": "c", "trait_scores": { "achievement_oriented": 1.0, "ambition": 0.8 } },
+          { "text": "Simple pleasures and peace", "value": "d", "trait_scores": { "mindfulness": 1.0, "contentment": 0.9 } }
+        ]
+      }
+    ]
+  },
+  "quick": {
+    "title": "Quick 5 Personality Check",
+    "description": "Get instant personality insights in just 5 questions",
+    "questions": [
+      {
+        "id": 1,
+        "text": "Your decision-making style is best described as:",
+        "category": "thinking_style",
+        "options": [
+          { "text": "Quick and intuitive", "value": "a", "trait_scores": { "intuitive": 1.0, "spontaneous": 0.7 } },
+          { "text": "Careful and analytical", "value": "b", "trait_scores": { "analytical": 1.0, "cautious": 0.7 } },
+          { "text": "Collaborative and inclusive", "value": "c", "trait_scores": { "collaborative": 1.0, "considerate": 0.7 } },
+          { "text": "Bold and decisive", "value": "d", "trait_scores": { "decisive": 1.0, "confident": 0.7 } }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "In social situations, you're most likely to:",
+        "category": "social_style",
+        "options": [
+          { "text": "Be the life of the party", "value": "a", "trait_scores": { "outgoing": 1.0, "energetic": 0.8 } },
+          { "text": "Have deep conversations with a few", "value": "b", "trait_scores": { "thoughtful": 1.0, "selective": 0.8 } },
+          { "text": "Help organize and bring people together", "value": "c", "trait_scores": { "organizing": 1.0, "helpful": 0.8 } },
+          { "text": "Observe and enjoy the atmosphere", "value": "d", "trait_scores": { "observant": 1.0, "calm": 0.8 } }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Your ideal vacation would involve:",
+        "category": "preferences",
+        "options": [
+          { "text": "Adventure and exploration", "value": "a", "trait_scores": { "adventurous": 1.0, "curious": 0.8 } },
+          { "text": "Relaxation and rejuvenation", "value": "b", "trait_scores": { "relaxed": 1.0, "peaceful": 0.8 } },
+          { "text": "Cultural immersion and learning", "value": "c", "trait_scores": { "intellectual": 1.0, "open_minded": 0.8 } },
+          { "text": "Spontaneous and unplanned fun", "value": "d", "trait_scores": { "spontaneous": 1.0, "flexible": 0.8 } }
+        ]
+      },
+      {
+        "id": 4,
+        "text": "When facing a problem, you first:",
+        "category": "problem_solving",
+        "options": [
+          { "text": "Research and gather information", "value": "a", "trait_scores": { "thorough": 1.0, "prepared": 0.8 } },
+          { "text": "Trust your gut feeling", "value": "b", "trait_scores": { "intuitive": 1.0, "instinctive": 0.8 } },
+          { "text": "Ask for advice and opinions", "value": "c", "trait_scores": { "collaborative": 1.0, "open": 0.8 } },
+          { "text": "Jump in and figure it out", "value": "d", "trait_scores": { "action_oriented": 1.0, "brave": 0.8 } }
+        ]
+      },
+      {
+        "id": 5,
+        "text": "Your friends would describe you as:",
+        "category": "self_perception",
+        "options": [
+          { "text": "The reliable one", "value": "a", "trait_scores": { "dependable": 1.0, "consistent": 0.8 } },
+          { "text": "The creative one", "value": "b", "trait_scores": { "creative": 1.0, "imaginative": 0.8 } },
+          { "text": "The caring one", "value": "c", "trait_scores": { "empathetic": 1.0, "supportive": 0.8 } },
+          { "text": "The fun one", "value": "d", "trait_scores": { "playful": 1.0, "entertaining": 0.8 } }
+        ]
+      }
+    ]
+  },
+  "thisorthat": {
+    "title": "This or That: Rapid Personality",
+    "description": "Quick-fire choices that reveal your true preferences",
+    "questions": [
+      {
+        "id": 1,
+        "text": "Pick your preference:",
+        "category": "lifestyle",
+        "options": [
+          { "text": "Early morning sunrise", "value": "a", "trait_scores": { "morning_person": 1.0, "disciplined": 0.7 } },
+          { "text": "Late night stargazing", "value": "b", "trait_scores": { "night_owl": 1.0, "contemplative": 0.7 } }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "Choose one:",
+        "category": "social",
+        "options": [
+          { "text": "Big party with everyone", "value": "a", "trait_scores": { "extroverted": 1.0, "social": 0.8 } },
+          { "text": "Cozy dinner with close friends", "value": "b", "trait_scores": { "intimate": 1.0, "selective": 0.8 } }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Would you rather:",
+        "category": "adventure",
+        "options": [
+          { "text": "Explore a new city", "value": "a", "trait_scores": { "adventurous": 1.0, "curious": 0.8 } },
+          { "text": "Perfect your favorite hobby", "value": "b", "trait_scores": { "focused": 1.0, "dedicated": 0.8 } }
+        ]
+      },
+      {
+        "id": 4,
+        "text": "Pick your superpower:",
+        "category": "abilities",
+        "options": [
+          { "text": "Read minds", "value": "a", "trait_scores": { "understanding": 1.0, "empathetic": 0.8 } },
+          { "text": "Time travel", "value": "b", "trait_scores": { "curious": 1.0, "nostalgic": 0.8 } }
+        ]
+      },
+      {
+        "id": 5,
+        "text": "Your ideal weekend:",
+        "category": "relaxation",
+        "options": [
+          { "text": "Planned activities", "value": "a", "trait_scores": { "organized": 1.0, "structured": 0.8 } },
+          { "text": "Go with the flow", "value": "b", "trait_scores": { "spontaneous": 1.0, "flexible": 0.8 } }
+        ]
+      },
+      {
+        "id": 6,
+        "text": "Choose your environment:",
+        "category": "environment",
+        "options": [
+          { "text": "Bustling coffee shop", "value": "a", "trait_scores": { "energized_by_people": 1.0, "social": 0.7 } },
+          { "text": "Quiet home office", "value": "b", "trait_scores": { "focused": 1.0, "independent": 0.7 } }
+        ]
+      },
+      {
+        "id": 7,
+        "text": "Your learning style:",
+        "category": "learning",
+        "options": [
+          { "text": "Hands-on experience", "value": "a", "trait_scores": { "practical": 1.0, "kinesthetic": 0.8 } },
+          { "text": "Reading and research", "value": "b", "trait_scores": { "theoretical": 1.0, "analytical": 0.8 } }
+        ]
+      },
+      {
+        "id": 8,
+        "text": "Pick your vacation:",
+        "category": "travel",
+        "options": [
+          { "text": "Beach resort", "value": "a", "trait_scores": { "relaxation_seeking": 1.0, "comfort": 0.8 } },
+          { "text": "Mountain hiking", "value": "b", "trait_scores": { "adventure_seeking": 1.0, "challenging": 0.8 } }
+        ]
+      },
+      {
+        "id": 9,
+        "text": "Your communication style:",
+        "category": "communication",
+        "options": [
+          { "text": "Direct and to the point", "value": "a", "trait_scores": { "direct": 1.0, "efficient": 0.8 } },
+          { "text": "Detailed and thorough", "value": "b", "trait_scores": { "comprehensive": 1.0, "thorough": 0.8 } }
+        ]
+      },
+      {
+        "id": 10,
+        "text": "Choose your role:",
+        "category": "teamwork",
+        "options": [
+          { "text": "Team leader", "value": "a", "trait_scores": { "leadership": 1.0, "decisive": 0.8 } },
+          { "text": "Creative contributor", "value": "b", "trait_scores": { "innovative": 1.0, "supportive": 0.8 } }
+        ]
+      }
+    ]
+  },
+  "mood": {
+    "title": "Mood-Based Personality Test",
+    "description": "Understand how your current mood shapes your personality expression",
+    "questions": [
+      {
+        "id": 1,
+        "text": "Right now, your emotional weather feels like:",
+        "category": "current_mood",
+        "options": [
+          { "text": "Sunny and clear", "value": "a", "trait_scores": { "positive_mood": 1.0, "optimistic": 0.8 } },
+          { "text": "Cloudy with breaks of sun", "value": "b", "trait_scores": { "mixed_mood": 1.0, "balanced": 0.7 } },
+          { "text": "Stormy and intense", "value": "c", "trait_scores": { "intense_mood": 1.0, "passionate": 0.8 } },
+          { "text": "Calm and misty", "value": "d", "trait_scores": { "peaceful_mood": 1.0, "reflective": 0.8 } }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "Your current energy could power:",
+        "category": "energy_level",
+        "options": [
+          { "text": "A rocket ship", "value": "a", "trait_scores": { "high_energy": 1.0, "motivated": 0.9 } },
+          { "text": "A steady light bulb", "value": "b", "trait_scores": { "stable_energy": 1.0, "consistent": 0.8 } },
+          { "text": "A flickering candle", "value": "c", "trait_scores": { "variable_energy": 1.0, "sensitive": 0.7 } },
+          { "text": "A night light", "value": "d", "trait_scores": { "low_energy": 1.0, "contemplative": 0.8 } }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Your mind feels like it's:",
+        "category": "mental_state",
+        "options": [
+          { "text": "Crystal clear and focused", "value": "a", "trait_scores": { "clarity": 1.0, "focused": 0.9 } },
+          { "text": "Creatively wandering", "value": "b", "trait_scores": { "creative": 1.0, "imaginative": 0.8 } },
+          { "text": "Processing many things at once", "value": "c", "trait_scores": { "multitasking": 1.0, "busy": 0.7 } },
+          { "text": "Seeking peace and quiet", "value": "d", "trait_scores": { "overwhelmed": 0.7, "rest_seeking": 1.0 } }
+        ]
+      },
+      {
+        "id": 4,
+        "text": "Your heart feels most connected to:",
+        "category": "emotional_connection",
+        "options": [
+          { "text": "Everyone around you", "value": "a", "trait_scores": { "connected": 1.0, "empathetic": 0.9 } },
+          { "text": "Your closest circle", "value": "b", "trait_scores": { "selective_connection": 1.0, "loyal": 0.8 } },
+          { "text": "Your personal goals", "value": "c", "trait_scores": { "self_focused": 0.8, "driven": 1.0 } },
+          { "text": "Nature and the universe", "value": "d", "trait_scores": { "spiritual": 1.0, "philosophical": 0.8 } }
+        ]
+      },
+      {
+        "id": 5,
+        "text": "If your mood was music, it would be:",
+        "category": "mood_expression",
+        "options": [
+          { "text": "Upbeat pop", "value": "a", "trait_scores": { "cheerful": 1.0, "energetic": 0.8 } },
+          { "text": "Smooth jazz", "value": "b", "trait_scores": { "relaxed": 1.0, "sophisticated": 0.7 } },
+          { "text": "Powerful rock", "value": "c", "trait_scores": { "intense": 1.0, "expressive": 0.8 } },
+          { "text": "Ambient sounds", "value": "d", "trait_scores": { "calm": 1.0, "introspective": 0.8 } }
+        ]
+      },
+      {
+        "id": 6,
+        "text": "Your current stress level is like:",
+        "category": "stress_level",
+        "options": [
+          { "text": "A gentle breeze", "value": "a", "trait_scores": { "low_stress": 1.0, "resilient": 0.8 } },
+          { "text": "Normal weather patterns", "value": "b", "trait_scores": { "managed_stress": 1.0, "balanced": 0.7 } },
+          { "text": "Building pressure", "value": "c", "trait_scores": { "moderate_stress": 1.0, "alert": 0.7 } },
+          { "text": "A pressure cooker", "value": "d", "trait_scores": { "high_stress": 1.0, "overwhelmed": 0.8 } }
+        ]
+      },
+      {
+        "id": 7,
+        "text": "Your motivation right now comes from:",
+        "category": "motivation_source",
+        "options": [
+          { "text": "Excitement for the future", "value": "a", "trait_scores": { "future_oriented": 1.0, "optimistic": 0.8 } },
+          { "text": "Present moment joy", "value": "b", "trait_scores": { "present_focused": 1.0, "mindful": 0.8 } },
+          { "text": "Desire to prove yourself", "value": "c", "trait_scores": { "achievement_driven": 1.0, "competitive": 0.7 } },
+          { "text": "Need for peace and balance", "value": "d", "trait_scores": { "harmony_seeking": 1.0, "gentle": 0.8 } }
+        ]
+      },
+      {
+        "id": 8,
+        "text": "Your emotional boundaries feel:",
+        "category": "boundaries",
+        "options": [
+          { "text": "Open and welcoming", "value": "a", "trait_scores": { "open": 1.0, "trusting": 0.8 } },
+          { "text": "Appropriately balanced", "value": "b", "trait_scores": { "balanced_boundaries": 1.0, "healthy": 0.8 } },
+          { "text": "Carefully protected", "value": "c", "trait_scores": { "guarded": 1.0, "cautious": 0.8 } },
+          { "text": "Constantly shifting", "value": "d", "trait_scores": { "flexible_boundaries": 1.0, "adaptive": 0.7 } }
+        ]
+      },
+      {
+        "id": 9,
+        "text": "Your inner voice is telling you to:",
+        "category": "inner_guidance",
+        "options": [
+          { "text": "Take action now", "value": "a", "trait_scores": { "action_oriented": 1.0, "decisive": 0.8 } },
+          { "text": "Think it through", "value": "b", "trait_scores": { "thoughtful": 1.0, "prudent": 0.8 } },
+          { "text": "Follow your heart", "value": "c", "trait_scores": { "intuitive": 1.0, "emotional": 0.8 } },
+          { "text": "Rest and recharge", "value": "d", "trait_scores": { "self_caring": 1.0, "wise": 0.7 } }
+        ]
+      },
+      {
+        "id": 10,
+        "text": "Your emotional resilience feels like:",
+        "category": "resilience",
+        "options": [
+          { "text": "Unshakeable mountain", "value": "a", "trait_scores": { "highly_resilient": 1.0, "strong": 0.9 } },
+          { "text": "Flexible bamboo", "value": "b", "trait_scores": { "adaptable": 1.0, "flexible": 0.8 } },
+          { "text": "Growing seedling", "value": "c", "trait_scores": { "developing": 1.0, "learning": 0.8 } },
+          { "text": "Gentle flowing water", "value": "d", "trait_scores": { "fluid": 1.0, "accepting": 0.8 } }
+        ]
+      }
+    ]
+  },
+  "career": {
+    "title": "Career Personality Match",
+    "description": "Discover careers that align perfectly with your personality type",
+    "questions": [
+      {
+        "id": 1,
+        "text": "Your ideal work environment would be:",
+        "category": "work_environment",
+        "options": [
+          { "text": "Fast-paced startup", "value": "a", "trait_scores": { "entrepreneurial": 1.0, "risk_taking": 0.8 } },
+          { "text": "Established corporation", "value": "b", "trait_scores": { "structured": 1.0, "stability_seeking": 0.8 } },
+          { "text": "Creative agency", "value": "c", "trait_scores": { "creative": 1.0, "innovative": 0.8 } },
+          { "text": "Remote/flexible", "value": "d", "trait_scores": { "independent": 1.0, "autonomous": 0.9 } }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "You're most motivated by:",
+        "category": "motivation",
+        "options": [
+          { "text": "Making a difference", "value": "a", "trait_scores": { "purpose_driven": 1.0, "altruistic": 0.8 } },
+          { "text": "Financial success", "value": "b", "trait_scores": { "achievement_oriented": 1.0, "ambitious": 0.8 } },
+          { "text": "Creative expression", "value": "c", "trait_scores": { "artistic": 1.0, "expressive": 0.8 } },
+          { "text": "Work-life balance", "value": "d", "trait_scores": { "balanced": 1.0, "holistic": 0.8 } }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Your preferred role in a team:",
+        "category": "team_role",
+        "options": [
+          { "text": "Visionary leader", "value": "a", "trait_scores": { "leadership": 1.0, "strategic": 0.8 } },
+          { "text": "Reliable executor", "value": "b", "trait_scores": { "dependable": 1.0, "detail_oriented": 0.8 } },
+          { "text": "Creative innovator", "value": "c", "trait_scores": { "innovative": 1.0, "original": 0.8 } },
+          { "text": "Supportive collaborator", "value": "d", "trait_scores": { "cooperative": 1.0, "helpful": 0.8 } }
+        ]
+      },
+      {
+        "id": 4,
+        "text": "Your approach to problem-solving:",
+        "category": "problem_solving",
+        "options": [
+          { "text": "Data-driven analysis", "value": "a", "trait_scores": { "analytical": 1.0, "logical": 0.9 } },
+          { "text": "Creative brainstorming", "value": "b", "trait_scores": { "creative": 1.0, "imaginative": 0.8 } },
+          { "text": "Collaborative discussion", "value": "c", "trait_scores": { "collaborative": 1.0, "inclusive": 0.8 } },
+          { "text": "Intuitive insights", "value": "d", "trait_scores": { "intuitive": 1.0, "perceptive": 0.8 } }
+        ]
+      },
+      {
+        "id": 5,
+        "text": "Your ideal career growth looks like:",
+        "category": "career_growth",
+        "options": [
+          { "text": "Climbing the corporate ladder", "value": "a", "trait_scores": { "ambitious": 1.0, "traditional": 0.7 } },
+          { "text": "Building your own business", "value": "b", "trait_scores": { "entrepreneurial": 1.0, "independent": 0.9 } },
+          { "text": "Becoming an expert in your field", "value": "c", "trait_scores": { "specialist": 1.0, "dedicated": 0.8 } },
+          { "text": "Exploring diverse opportunities", "value": "d", "trait_scores": { "versatile": 1.0, "adventurous": 0.8 } }
+        ]
+      },
+      {
+        "id": 6,
+        "text": "You handle workplace stress by:",
+        "category": "stress_management",
+        "options": [
+          { "text": "Taking charge and solving it", "value": "a", "trait_scores": { "proactive": 1.0, "problem_solver": 0.8 } },
+          { "text": "Planning and organizing", "value": "b", "trait_scores": { "organized": 1.0, "methodical": 0.8 } },
+          { "text": "Seeking support from others", "value": "c", "trait_scores": { "collaborative": 1.0, "team_oriented": 0.7 } },
+          { "text": "Taking breaks to recharge", "value": "d", "trait_scores": { "self_aware": 1.0, "balanced": 0.8 } }
+        ]
+      },
+      {
+        "id": 7,
+        "text": "Your communication style at work:",
+        "category": "communication",
+        "options": [
+          { "text": "Direct and efficient", "value": "a", "trait_scores": { "direct": 1.0, "time_conscious": 0.8 } },
+          { "text": "Detailed and thorough", "value": "b", "trait_scores": { "thorough": 1.0, "precise": 0.8 } },
+          { "text": "Warm and personable", "value": "c", "trait_scores": { "personable": 1.0, "empathetic": 0.8 } },
+          { "text": "Adaptive to the audience", "value": "d", "trait_scores": { "flexible": 1.0, "perceptive": 0.8 } }
+        ]
+      },
+      {
+        "id": 8,
+        "text": "Your preferred work schedule:",
+        "category": "work_style",
+        "options": [
+          { "text": "Traditional 9-5", "value": "a", "trait_scores": { "traditional": 1.0, "structured": 0.8 } },
+          { "text": "Flexible hours", "value": "b", "trait_scores": { "flexible": 1.0, "autonomous": 0.8 } },
+          { "text": "Project-based bursts", "value": "c", "trait_scores": { "project_focused": 1.0, "intense": 0.7 } },
+          { "text": "Completely self-directed", "value": "d", "trait_scores": { "independent": 1.0, "self_managed": 0.9 } }
+        ]
+      },
+      {
+        "id": 9,
+        "text": "You measure career success by:",
+        "category": "success_metrics",
+        "options": [
+          { "text": "Impact and influence", "value": "a", "trait_scores": { "impact_driven": 1.0, "influential": 0.8 } },
+          { "text": "Financial rewards", "value": "b", "trait_scores": { "financially_motivated": 1.0, "practical": 0.7 } },
+          { "text": "Personal fulfillment", "value": "c", "trait_scores": { "fulfillment_seeking": 1.0, "authentic": 0.8 } },
+          { "text": "Recognition and respect", "value": "d", "trait_scores": { "recognition_seeking": 1.0, "status_conscious": 0.7 } }
+        ]
+      },
+      {
+        "id": 10,
+        "text": "Your ideal boss would be someone who:",
+        "category": "leadership_preference",
+        "options": [
+          { "text": "Gives clear direction", "value": "a", "trait_scores": { "direction_seeking": 1.0, "clarity_focused": 0.8 } },
+          { "text": "Provides autonomy", "value": "b", "trait_scores": { "autonomous": 1.0, "self_directed": 0.9 } },
+          { "text": "Mentors and develops", "value": "c", "trait_scores": { "growth_oriented": 1.0, "learning_focused": 0.8 } },
+          { "text": "Inspires and motivates", "value": "d", "trait_scores": { "inspiration_seeking": 1.0, "vision_oriented": 0.8 } }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,156 @@
+{
+  "relationship": {
+    "title": "Relationship Compatibility Profile",
+    "description": "Discover your relationship style and what makes you thrive in partnerships",
+    "icon": "heart",
+    "color": "red",
+    "duration": "4-5 mins",
+    "questions": 15,
+    "difficulty": "Medium",
+    "questionBank": [
+      {
+        "id": 1,
+        "text": "In relationships, I express love primarily through:",
+        "category": "love_language",
+        "options": [
+          { "text": "Words of affirmation", "value": "a", "trait_scores": { "verbal_affection": 1.0, "expressive": 0.8 } },
+          { "text": "Quality time together", "value": "b", "trait_scores": { "quality_time": 1.0, "present": 0.8 } },
+          { "text": "Acts of service", "value": "c", "trait_scores": { "service_oriented": 1.0, "caring": 0.8 } },
+          { "text": "Physical touch", "value": "d", "trait_scores": { "physical_affection": 1.0, "intimate": 0.8 } }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "My ideal relationship dynamic is:",
+        "category": "relationship_style",
+        "options": [
+          { "text": "Equal partners in everything", "value": "a", "trait_scores": { "egalitarian": 1.0, "balanced": 0.8 } },
+          { "text": "Complementary strengths", "value": "b", "trait_scores": { "complementary": 1.0, "supportive": 0.8 } },
+          { "text": "Independent but connected", "value": "c", "trait_scores": { "independent": 1.0, "autonomous": 0.8 } },
+          { "text": "Deeply intertwined lives", "value": "d", "trait_scores": { "interdependent": 1.0, "close": 0.9 } }
+        ]
+      }
+    ]
+  },
+  "emotional_intelligence": {
+    "title": "Emotional Intelligence Assessment",
+    "description": "Measure your ability to understand and manage emotions",
+    "icon": "brain",
+    "color": "purple",
+    "duration": "5-6 mins",
+    "questions": 20,
+    "difficulty": "Hard",
+    "questionBank": [
+      {
+        "id": 1,
+        "text": "When someone is upset, I can usually:",
+        "category": "empathy",
+        "options": [
+          { "text": "Feel what they're feeling", "value": "a", "trait_scores": { "empathy": 1.0, "emotional_contagion": 0.8 } },
+          { "text": "Understand their perspective", "value": "b", "trait_scores": { "cognitive_empathy": 1.0, "understanding": 0.8 } },
+          { "text": "Offer practical solutions", "value": "c", "trait_scores": { "problem_solving": 0.8, "supportive": 0.7 } },
+          { "text": "Give them space", "value": "d", "trait_scores": { "respectful": 0.7, "boundaries": 0.8 } }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "I recognize my own emotions:",
+        "category": "self_awareness",
+        "options": [
+          { "text": "Immediately as they arise", "value": "a", "trait_scores": { "self_awareness": 1.0, "mindful": 0.9 } },
+          { "text": "After some reflection", "value": "b", "trait_scores": { "reflective": 0.8, "thoughtful": 0.7 } },
+          { "text": "When others point them out", "value": "c", "trait_scores": { "developing_awareness": 0.5, "open": 0.6 } },
+          { "text": "Rarely think about them", "value": "d", "trait_scores": { "low_awareness": 0.2, "practical": 0.5 } }
+        ]
+      }
+    ]
+  },
+  "leadership": {
+    "title": "Leadership Style Quiz",
+    "description": "Uncover your natural leadership approach and strengths",
+    "icon": "shield",
+    "color": "blue",
+    "duration": "4-5 mins",
+    "questions": 18,
+    "difficulty": "Medium",
+    "questionBank": [
+      {
+        "id": 1,
+        "text": "As a leader, I motivate others by:",
+        "category": "motivation_style",
+        "options": [
+          { "text": "Setting inspiring visions", "value": "a", "trait_scores": { "visionary": 1.0, "inspirational": 0.9 } },
+          { "text": "Leading by example", "value": "b", "trait_scores": { "authentic": 1.0, "credible": 0.8 } },
+          { "text": "Recognizing achievements", "value": "c", "trait_scores": { "supportive": 1.0, "encouraging": 0.8 } },
+          { "text": "Providing clear structure", "value": "d", "trait_scores": { "organized": 1.0, "directive": 0.8 } }
+        ]
+      }
+    ]
+  },
+  "creativity": {
+    "title": "Creativity Index Test",
+    "description": "Explore your creative potential and innovative thinking style",
+    "icon": "palette",
+    "color": "pink",
+    "duration": "3-4 mins",
+    "questions": 12,
+    "difficulty": "Easy",
+    "questionBank": [
+      {
+        "id": 1,
+        "text": "My best ideas come when:",
+        "category": "creative_process",
+        "options": [
+          { "text": "I'm completely relaxed", "value": "a", "trait_scores": { "relaxed_creativity": 1.0, "spontaneous": 0.8 } },
+          { "text": "I'm under pressure", "value": "b", "trait_scores": { "pressure_creativity": 1.0, "deadline_driven": 0.8 } },
+          { "text": "I'm collaborating", "value": "c", "trait_scores": { "collaborative_creativity": 1.0, "synergistic": 0.8 } },
+          { "text": "I'm in nature", "value": "d", "trait_scores": { "nature_inspired": 1.0, "environmental": 0.8 } }
+        ]
+      }
+    ]
+  },
+  "stress_response": {
+    "title": "Stress Response Profile",
+    "description": "Understand how you naturally respond to and manage stress",
+    "icon": "activity",
+    "color": "orange",
+    "duration": "3-4 mins",
+    "questions": 15,
+    "difficulty": "Medium",
+    "questionBank": [
+      {
+        "id": 1,
+        "text": "Under stress, I tend to:",
+        "category": "stress_reaction",
+        "options": [
+          { "text": "Take immediate action", "value": "a", "trait_scores": { "fight_response": 1.0, "proactive": 0.8 } },
+          { "text": "Withdraw and reflect", "value": "b", "trait_scores": { "flight_response": 1.0, "introspective": 0.8 } },
+          { "text": "Seek support from others", "value": "c", "trait_scores": { "social_support": 1.0, "connected": 0.8 } },
+          { "text": "Analyze the situation", "value": "d", "trait_scores": { "analytical_response": 1.0, "rational": 0.8 } }
+        ]
+      }
+    ]
+  },
+  "social_style": {
+    "title": "Social Style Assessment",
+    "description": "Discover your unique social interaction patterns and preferences",
+    "icon": "users",
+    "color": "green",
+    "duration": "4-5 mins",
+    "questions": 16,
+    "difficulty": "Easy",
+    "questionBank": [
+      {
+        "id": 1,
+        "text": "At social gatherings, I'm usually:",
+        "category": "social_behavior",
+        "options": [
+          { "text": "The conversation starter", "value": "a", "trait_scores": { "initiator": 1.0, "outgoing": 0.9 } },
+          { "text": "The active listener", "value": "b", "trait_scores": { "listener": 1.0, "supportive": 0.8 } },
+          { "text": "The event organizer", "value": "c", "trait_scores": { "organizer": 1.0, "responsible": 0.8 } },
+          { "text": "The quiet observer", "value": "d", "trait_scores": { "observer": 1.0, "reflective": 0.8 } }
+        ]
+      }
+    ]
+  }
+}

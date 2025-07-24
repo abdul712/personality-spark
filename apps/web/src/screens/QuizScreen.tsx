@@ -29,6 +29,287 @@ interface Question {
 
 const { width } = Dimensions.get('window');
 
+// Helper function to generate mock questions based on quiz type
+const generateMockQuestions = (quizType: string): Question[] => {
+  const questionBanks: Record<string, Question[]> = {
+    big5: [
+      {
+        id: 1,
+        text: "When you're at a party, you typically...",
+        options: [
+          { text: "Energize by talking to many people", value: "extrovert_high" },
+          { text: "Enjoy a few deep conversations", value: "extrovert_medium" },
+          { text: "Find a quiet corner with close friends", value: "introvert_medium" },
+          { text: "Feel drained and want to leave early", value: "introvert_high" }
+        ]
+      },
+      {
+        id: 2,
+        text: "When making decisions, you rely more on...",
+        options: [
+          { text: "Logic and objective analysis", value: "thinking_high" },
+          { text: "A mix of logic and feelings", value: "balanced" },
+          { text: "How it affects people involved", value: "feeling_medium" },
+          { text: "Your gut feeling and emotions", value: "feeling_high" }
+        ]
+      },
+      {
+        id: 3,
+        text: "Your ideal weekend involves...",
+        options: [
+          { text: "Trying something completely new", value: "openness_high" },
+          { text: "A mix of familiar and new activities", value: "openness_medium" },
+          { text: "Relaxing with familiar comforts", value: "openness_low" },
+          { text: "Following your usual routine", value: "openness_very_low" }
+        ]
+      },
+      {
+        id: 4,
+        text: "When working on projects, you...",
+        options: [
+          { text: "Plan every detail in advance", value: "conscientiousness_high" },
+          { text: "Have a general plan but stay flexible", value: "conscientiousness_medium" },
+          { text: "Figure it out as you go", value: "conscientiousness_low" },
+          { text: "Work best under last-minute pressure", value: "conscientiousness_very_low" }
+        ]
+      },
+      {
+        id: 5,
+        text: "In stressful situations, you tend to...",
+        options: [
+          { text: "Stay calm and solution-focused", value: "neuroticism_low" },
+          { text: "Feel stressed but manage it well", value: "neuroticism_medium" },
+          { text: "Get anxious but work through it", value: "neuroticism_high" },
+          { text: "Feel overwhelmed easily", value: "neuroticism_very_high" }
+        ]
+      }
+    ],
+    daily: [
+      {
+        id: 1,
+        text: "This morning, your ideal start would be:",
+        options: [
+          { text: "Quiet meditation and journaling", value: "introspective" },
+          { text: "Energetic workout or run", value: "active" },
+          { text: "Coffee with friends or family", value: "social" },
+          { text: "Diving straight into projects", value: "productive" }
+        ]
+      },
+      {
+        id: 2,
+        text: "Today's energy feels like:",
+        options: [
+          { text: "A rocket ready to launch", value: "high_energy" },
+          { text: "A steady flowing river", value: "balanced" },
+          { text: "A cozy fireplace", value: "relaxed" },
+          { text: "A hibernating bear", value: "low_energy" }
+        ]
+      },
+      {
+        id: 3,
+        text: "Your focus today is on:",
+        options: [
+          { text: "Achieving big goals", value: "ambitious" },
+          { text: "Helping others succeed", value: "supportive" },
+          { text: "Learning something new", value: "curious" },
+          { text: "Finding inner peace", value: "mindful" }
+        ]
+      }
+    ],
+    quick: [
+      {
+        id: 1,
+        text: "Your decision-making style is:",
+        options: [
+          { text: "Quick and intuitive", value: "intuitive" },
+          { text: "Careful and analytical", value: "analytical" },
+          { text: "Collaborative and inclusive", value: "collaborative" },
+          { text: "Bold and decisive", value: "decisive" }
+        ]
+      },
+      {
+        id: 2,
+        text: "In social situations, you're:",
+        options: [
+          { text: "The life of the party", value: "outgoing" },
+          { text: "Deep conversation seeker", value: "thoughtful" },
+          { text: "The organizer", value: "leader" },
+          { text: "Happy observer", value: "observer" }
+        ]
+      }
+    ],
+    thisorthat: [
+      {
+        id: 1,
+        text: "Pick your preference:",
+        options: [
+          { text: "Early morning sunrise", value: "morning_person" },
+          { text: "Late night stargazing", value: "night_owl" }
+        ]
+      },
+      {
+        id: 2,
+        text: "Choose one:",
+        options: [
+          { text: "Big party with everyone", value: "extroverted" },
+          { text: "Cozy dinner with close friends", value: "intimate" }
+        ]
+      },
+      {
+        id: 3,
+        text: "Would you rather:",
+        options: [
+          { text: "Explore a new city", value: "adventurous" },
+          { text: "Perfect your favorite hobby", value: "focused" }
+        ]
+      }
+    ],
+    mood: [
+      {
+        id: 1,
+        text: "Right now, your emotional weather feels like:",
+        options: [
+          { text: "Sunny and clear", value: "positive" },
+          { text: "Cloudy with breaks of sun", value: "mixed" },
+          { text: "Stormy and intense", value: "intense" },
+          { text: "Calm and misty", value: "peaceful" }
+        ]
+      },
+      {
+        id: 2,
+        text: "Your current energy could power:",
+        options: [
+          { text: "A rocket ship", value: "high_energy" },
+          { text: "A steady light bulb", value: "stable" },
+          { text: "A flickering candle", value: "variable" },
+          { text: "A night light", value: "low_energy" }
+        ]
+      }
+    ],
+    career: [
+      {
+        id: 1,
+        text: "Your ideal work environment would be:",
+        options: [
+          { text: "Fast-paced startup", value: "entrepreneurial" },
+          { text: "Established corporation", value: "structured" },
+          { text: "Creative agency", value: "creative" },
+          { text: "Remote/flexible", value: "independent" }
+        ]
+      },
+      {
+        id: 2,
+        text: "You're most motivated by:",
+        options: [
+          { text: "Making a difference", value: "purpose_driven" },
+          { text: "Financial success", value: "achievement_oriented" },
+          { text: "Creative expression", value: "artistic" },
+          { text: "Work-life balance", value: "balanced" }
+        ]
+      }
+    ],
+    // New quiz types
+    relationship: [
+      {
+        id: 1,
+        text: "In relationships, you express love through:",
+        options: [
+          { text: "Words of affirmation", value: "verbal" },
+          { text: "Quality time together", value: "time" },
+          { text: "Acts of service", value: "service" },
+          { text: "Physical touch", value: "physical" }
+        ]
+      },
+      {
+        id: 2,
+        text: "Your ideal relationship dynamic is:",
+        options: [
+          { text: "Equal partners in everything", value: "egalitarian" },
+          { text: "Complementary strengths", value: "complementary" },
+          { text: "Independent but connected", value: "independent" },
+          { text: "Deeply intertwined lives", value: "interdependent" }
+        ]
+      }
+    ],
+    emotional_intelligence: [
+      {
+        id: 1,
+        text: "When someone is upset, you:",
+        options: [
+          { text: "Feel what they're feeling", value: "empathetic" },
+          { text: "Understand their perspective", value: "cognitive" },
+          { text: "Offer practical solutions", value: "practical" },
+          { text: "Give them space", value: "respectful" }
+        ]
+      },
+      {
+        id: 2,
+        text: "You recognize your emotions:",
+        options: [
+          { text: "Immediately as they arise", value: "highly_aware" },
+          { text: "After some reflection", value: "reflective" },
+          { text: "When others point them out", value: "developing" },
+          { text: "Rarely think about them", value: "practical" }
+        ]
+      }
+    ],
+    leadership: [
+      {
+        id: 1,
+        text: "As a leader, you motivate by:",
+        options: [
+          { text: "Setting inspiring visions", value: "visionary" },
+          { text: "Leading by example", value: "authentic" },
+          { text: "Recognizing achievements", value: "supportive" },
+          { text: "Providing clear structure", value: "organized" }
+        ]
+      }
+    ],
+    creativity: [
+      {
+        id: 1,
+        text: "Your best ideas come when:",
+        options: [
+          { text: "You're completely relaxed", value: "relaxed" },
+          { text: "You're under pressure", value: "pressure" },
+          { text: "You're collaborating", value: "collaborative" },
+          { text: "You're in nature", value: "environmental" }
+        ]
+      }
+    ],
+    stress_response: [
+      {
+        id: 1,
+        text: "Under stress, you tend to:",
+        options: [
+          { text: "Take immediate action", value: "fight" },
+          { text: "Withdraw and reflect", value: "flight" },
+          { text: "Seek support from others", value: "social" },
+          { text: "Analyze the situation", value: "analytical" }
+        ]
+      }
+    ],
+    social_style: [
+      {
+        id: 1,
+        text: "At social gatherings, you're usually:",
+        options: [
+          { text: "The conversation starter", value: "initiator" },
+          { text: "The active listener", value: "listener" },
+          { text: "The event organizer", value: "organizer" },
+          { text: "The quiet observer", value: "observer" }
+        ]
+      }
+    ]
+  };
+
+  // Get questions for the specific quiz type, or default to quick assessment
+  const questions = questionBanks[quizType] || questionBanks.quick;
+  
+  // Return shuffled questions to add variety
+  return questions.sort(() => Math.random() - 0.5);
+};
+
 const QuizScreen: React.FC<QuizScreenProps> = ({ navigation, route }) => {
   const { quizType } = route.params;
 
@@ -46,59 +327,8 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ navigation, route }) => {
   useEffect(() => {
     // Simulate loading quiz questions
     setTimeout(() => {
-      // Mock questions - in real app, these would come from API
-      const mockQuestions: Question[] = [
-        {
-          id: 1,
-          text: "When you're at a party, you typically...",
-          options: [
-            { text: "Energize by talking to many people", value: "extrovert_high" },
-            { text: "Enjoy a few deep conversations", value: "extrovert_medium" },
-            { text: "Find a quiet corner with close friends", value: "introvert_medium" },
-            { text: "Feel drained and want to leave early", value: "introvert_high" }
-          ]
-        },
-        {
-          id: 2,
-          text: "When making decisions, you rely more on...",
-          options: [
-            { text: "Logic and objective analysis", value: "thinking_high" },
-            { text: "A mix of logic and feelings", value: "balanced" },
-            { text: "How it affects people involved", value: "feeling_medium" },
-            { text: "Your gut feeling and emotions", value: "feeling_high" }
-          ]
-        },
-        {
-          id: 3,
-          text: "Your ideal weekend involves...",
-          options: [
-            { text: "Trying something completely new", value: "openness_high" },
-            { text: "A mix of familiar and new activities", value: "openness_medium" },
-            { text: "Relaxing with familiar comforts", value: "openness_low" },
-            { text: "Following your usual routine", value: "openness_very_low" }
-          ]
-        },
-        {
-          id: 4,
-          text: "When working on projects, you...",
-          options: [
-            { text: "Plan every detail in advance", value: "conscientiousness_high" },
-            { text: "Have a general plan but stay flexible", value: "conscientiousness_medium" },
-            { text: "Figure it out as you go", value: "conscientiousness_low" },
-            { text: "Work best under last-minute pressure", value: "conscientiousness_very_low" }
-          ]
-        },
-        {
-          id: 5,
-          text: "In stressful situations, you tend to...",
-          options: [
-            { text: "Stay calm and solution-focused", value: "neuroticism_low" },
-            { text: "Feel stressed but manage it well", value: "neuroticism_medium" },
-            { text: "Get anxious but work through it", value: "neuroticism_high" },
-            { text: "Feel overwhelmed easily", value: "neuroticism_very_high" }
-          ]
-        }
-      ];
+      // Generate questions based on quiz type
+      const mockQuestions = generateMockQuestions(quizType);
       setQuestions(mockQuestions);
       setLoading(false);
 
@@ -191,17 +421,86 @@ const QuizScreen: React.FC<QuizScreenProps> = ({ navigation, route }) => {
   };
 
   if (loading) {
+    const loadingMessages: Record<string, { title: string; subtitle: string; icon: string }> = {
+      big5: {
+        title: "Preparing your Big 5 assessment...",
+        subtitle: "Analyzing personality dimensions",
+        icon: "cpu"
+      },
+      daily: {
+        title: "Creating today's challenge...",
+        subtitle: "Personalizing based on the time of day",
+        icon: "zap"
+      },
+      quick: {
+        title: "Generating quick insights...",
+        subtitle: "This will only take a moment",
+        icon: "trending-up"
+      },
+      thisorthat: {
+        title: "Loading rapid choices...",
+        subtitle: "Preparing fun comparisons",
+        icon: "layers"
+      },
+      mood: {
+        title: "Reading your emotional weather...",
+        subtitle: "Tuning into your current state",
+        icon: "heart"
+      },
+      career: {
+        title: "Analyzing career compatibility...",
+        subtitle: "Matching your traits to professions",
+        icon: "shield"
+      },
+      relationship: {
+        title: "Exploring relationship dynamics...",
+        subtitle: "Understanding your connection style",
+        icon: "heart"
+      },
+      emotional_intelligence: {
+        title: "Measuring emotional awareness...",
+        subtitle: "Preparing EQ assessment",
+        icon: "brain"
+      },
+      leadership: {
+        title: "Identifying leadership traits...",
+        subtitle: "Analyzing your influence style",
+        icon: "award"
+      },
+      creativity: {
+        title: "Unlocking creative potential...",
+        subtitle: "Exploring your innovative side",
+        icon: "palette"
+      },
+      stress_response: {
+        title: "Analyzing stress patterns...",
+        subtitle: "Understanding your coping style",
+        icon: "activity"
+      },
+      social_style: {
+        title: "Mapping social preferences...",
+        subtitle: "Discovering your interaction style",
+        icon: "users"
+      }
+    };
+
+    const message = loadingMessages[quizType] || {
+      title: "Preparing your personalized quiz...",
+      subtitle: "Our AI is crafting questions just for you",
+      icon: "cpu"
+    };
+
     return (
       <View className="flex-1 justify-center items-center bg-white dark:bg-gray-900">
         <View className="items-center">
           <View className="w-20 h-20 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center mb-4">
-            <Icon name="cpu" size={32} color="#9333ea" />
+            <Icon name={message.icon} size={32} color="#9333ea" />
           </View>
           <Text className="text-xl text-gray-800 dark:text-gray-200 font-semibold">
-            Preparing your personalized quiz...
+            {message.title}
           </Text>
           <Text className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-            Our AI is crafting questions just for you
+            {message.subtitle}
           </Text>
         </View>
       </View>

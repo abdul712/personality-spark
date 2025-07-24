@@ -1,5 +1,7 @@
 import type { Env } from '../types/env';
 import { Quiz, QuizQuestion } from '../types/models';
+import quizQuestions from '../../../backend/data/quiz-questions.json';
+import quizTemplates from '../../../backend/data/quiz-templates.json';
 
 export class AIService {
   constructor(private env: Env) {}
@@ -208,8 +210,18 @@ Output format:
     // Implement template-based quiz generation
     const templates = {
       big5: this.getBig5Template(),
-      quick5: this.getQuick5Template(),
+      quick: this.getQuick5Template(),
       thisorthat: this.getThisOrThatTemplate(),
+      daily: this.getDailyTemplate(),
+      mood: this.getMoodTemplate(),
+      career: this.getCareerTemplate(),
+      // New quiz types from templates
+      relationship: this.getTemplateQuiz('relationship', params.numQuestions || 15),
+      emotional_intelligence: this.getTemplateQuiz('emotional_intelligence', params.numQuestions || 20),
+      leadership: this.getTemplateQuiz('leadership', params.numQuestions || 18),
+      creativity: this.getTemplateQuiz('creativity', params.numQuestions || 12),
+      stress_response: this.getTemplateQuiz('stress_response', params.numQuestions || 15),
+      social_style: this.getTemplateQuiz('social_style', params.numQuestions || 16)
     };
 
     const template = templates[params.type as keyof typeof templates] || this.getDefaultTemplate();
@@ -293,60 +305,70 @@ Output format:
 
   // Template data methods
   private getBig5Template() {
+    const big5Data = quizQuestions.big5;
     return {
-      title: 'Big 5 Personality Assessment',
-      description: 'Discover your personality across five major dimensions',
-      questions: [
-        {
-          id: 1,
-          text: 'I enjoy being the center of attention at social gatherings.',
-          options: [
-            { text: 'Strongly agree', value: 'a', trait_scores: { extraversion: 1.0 } },
-            { text: 'Somewhat agree', value: 'b', trait_scores: { extraversion: 0.7 } },
-            { text: 'Somewhat disagree', value: 'c', trait_scores: { extraversion: 0.3 } },
-            { text: 'Strongly disagree', value: 'd', trait_scores: { extraversion: 0.0 } },
-          ],
-        },
-        // Add more questions...
-      ],
+      title: big5Data.title,
+      description: big5Data.description,
+      questions: this.selectRandomQuestions(big5Data.questions, 25)
     };
   }
 
+  private selectRandomQuestions(questions: any[], count: number): any[] {
+    const shuffled = [...questions].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, Math.min(count, questions.length));
+  }
+
   private getQuick5Template() {
+    const quickData = quizQuestions.quick;
     return {
-      title: 'Quick 5 Personality Check',
-      description: 'Get personality insights in just 5 questions',
-      questions: [
-        {
-          id: 1,
-          text: 'When facing a challenge, I prefer to:',
-          options: [
-            { text: 'Tackle it head-on immediately', value: 'a', trait_scores: { action_oriented: 1.0 } },
-            { text: 'Plan carefully before acting', value: 'b', trait_scores: { strategic: 1.0 } },
-            { text: 'Seek advice from others', value: 'c', trait_scores: { collaborative: 1.0 } },
-            { text: 'Wait and see if it resolves itself', value: 'd', trait_scores: { patient: 1.0 } },
-          ],
-        },
-        // Add more questions...
-      ],
+      title: quickData.title,
+      description: quickData.description,
+      questions: this.selectRandomQuestions(quickData.questions, 5)
     };
   }
 
   private getThisOrThatTemplate() {
+    const thisOrThatData = quizQuestions.thisorthat;
     return {
-      title: 'This or That: Rapid Personality',
-      description: 'Quick choices that reveal your personality',
-      questions: [
-        {
-          id: 1,
-          text: 'Which appeals to you more?',
-          options: [
-            { text: 'Mountain hiking', value: 'a', trait_scores: { adventurous: 1.0, outdoorsy: 0.8 } },
-            { text: 'Beach relaxation', value: 'b', trait_scores: { relaxed: 1.0, social: 0.6 } },
-          ],
-        },
-        // Add more questions...
-      ],
+      title: thisOrThatData.title,
+      description: thisOrThatData.description,
+      questions: this.selectRandomQuestions(thisOrThatData.questions, 10)
+    };
+  }
+
+  private getDailyTemplate() {
+    const dailyData = quizQuestions.daily;
+    // Select questions based on time of day
+    const hour = new Date().getHours();
+    const timeBasedQuestions = dailyData.questions.filter((q: any) => {
+      if (hour < 12 && q.category.includes('morning')) return true;
+      if (hour >= 12 && hour < 17 && q.category.includes('energy')) return true;
+      if (hour >= 17 && q.category.includes('mood')) return true;
+      return true;
+    });
+    
+    return {
+      title: dailyData.title,
+      description: dailyData.description,
+      questions: this.selectRandomQuestions(timeBasedQuestions, 15)
+    };
+  }
+
+  private getMoodTemplate() {
+    const moodData = quizQuestions.mood;
+    return {
+      title: moodData.title,
+      description: moodData.description,
+      questions: this.selectRandomQuestions(moodData.questions, 10)
+    };
+  }
+
+  private getCareerTemplate() {
+    const careerData = quizQuestions.career;
+    return {
+      title: careerData.title,
+      description: careerData.description,
+      questions: this.selectRandomQuestions(careerData.questions, 20)
     };
   }
 
@@ -354,19 +376,51 @@ Output format:
     return this.getQuick5Template();
   }
 
+  private getTemplateQuiz(type: string, numQuestions: number) {
+    const template = (quizTemplates as any)[type];
+    if (!template) return this.getDefaultTemplate();
+    
+    return {
+      title: template.title,
+      description: template.description,
+      questions: this.selectRandomQuestions(template.questionBank, numQuestions)
+    };
+  }
+
   private getPersonalityType(trait: string): string {
     const typeMap: Record<string, string> = {
+      // Big 5 traits
       extraversion: 'The Social Butterfly',
       openness: 'The Creative Explorer',
       conscientiousness: 'The Organized Achiever',
       agreeableness: 'The Harmonious Helper',
       neuroticism: 'The Sensitive Soul',
+      // Action traits
       action_oriented: 'The Go-Getter',
       strategic: 'The Mastermind',
       collaborative: 'The Team Player',
       patient: 'The Steady Rock',
       adventurous: 'The Thrill Seeker',
       relaxed: 'The Zen Master',
+      // Mood traits
+      positive_mood: 'The Optimist',
+      high_energy: 'The Energizer',
+      mindful: 'The Present Mind',
+      // Career traits
+      entrepreneurial: 'The Innovator',
+      leadership: 'The Natural Leader',
+      analytical: 'The Analyst',
+      creative: 'The Creative Mind',
+      // Relationship traits
+      empathetic: 'The Empath',
+      independent: 'The Free Spirit',
+      supportive: 'The Supporter',
+      // Emotional intelligence traits
+      self_aware: 'The Self-Aware Soul',
+      emotionally_intelligent: 'The EQ Master',
+      // Stress response traits
+      resilient: 'The Resilient One',
+      adaptive: 'The Adapter',
     };
     
     return typeMap[trait] || 'The Unique Individual';
