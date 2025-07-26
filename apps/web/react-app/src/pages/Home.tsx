@@ -29,9 +29,9 @@ const Home: React.FC = () => {
       }, 16);
     };
 
-    countUp(setUserCount, 50000, 2000);
-    countUp(setQuizCount, 100, 2000);
-    countUp(setInsightCount, 1000000, 2000);
+    countUp(setUserCount, 48400, 2000);
+    countUp(setQuizCount, 96, 2000);
+    countUp(setInsightCount, 968000, 2000);
   }, []);
 
   return (
@@ -311,7 +311,7 @@ const Home: React.FC = () => {
             Ready to Meet the Real You?
           </h2>
           <p className="text-xl text-white/90 mb-10 max-w-2xl mx-auto">
-            Join over 50,000 people who've discovered their authentic selves through our AI-powered personality analysis
+            Join over 48,000 people who've discovered their authentic selves through our AI-powered personality analysis
           </p>
           <Button
             size="xl"
