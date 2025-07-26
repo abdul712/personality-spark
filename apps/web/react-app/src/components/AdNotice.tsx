@@ -5,7 +5,7 @@ interface AdNoticeProps {
 }
 
 export const AdNotice: React.FC<AdNoticeProps> = ({ show = false }) => {
-  if (!show || process.env.NODE_ENV === 'production') {
+  if (!show || import.meta.env.PROD) {
     return null;
   }
 

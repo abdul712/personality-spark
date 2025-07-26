@@ -50,7 +50,7 @@ const BlogList: React.FC = () => {
         const indexData = await indexResponse.json();
         
         // Load all chunks in parallel
-        const chunkPromises = indexData.chunks.map(chunk => 
+        const chunkPromises = indexData.chunks.map((chunk: any) => 
           fetch(`/${chunk.file}`).then(res => res.json())
         );
         
