@@ -14,17 +14,7 @@ This guide explains how to add various tracking scripts to your PersonalitySpark
 
 ## Available Tracking Options
 
-### 1. Journey AI Script
-
-To add the Journey AI tracking script:
-
-1. Get your Script ID from [Journey's documentation](https://journeymv.zendesk.com/hc/en-us/articles/24188199109403)
-2. Add it to your `.env` file:
-   ```
-   REACT_APP_JOURNEY_SCRIPT_ID=your-journey-script-id
-   ```
-
-### 2. Google Analytics
+### 1. Google Analytics
 
 To add Google Analytics:
 
@@ -35,7 +25,7 @@ To add Google Analytics:
    REACT_APP_GA_MEASUREMENT_ID=G-XXXXXXXXXX
    ```
 
-### 3. Google Search Console
+### 2. Google Search Console
 
 To verify your site with Google Search Console:
 
@@ -48,7 +38,7 @@ To verify your site with Google Search Console:
    REACT_APP_GOOGLE_SITE_VERIFICATION=your-verification-token
    ```
 
-### 4. Facebook Pixel
+### 3. Facebook Pixel
 
 To add Facebook Pixel tracking:
 
@@ -58,7 +48,7 @@ To add Facebook Pixel tracking:
    REACT_APP_FB_PIXEL_ID=your-pixel-id
    ```
 
-### 5. Custom Scripts
+### 4. Custom Scripts
 
 You can add any custom scripts to the head or body:
 

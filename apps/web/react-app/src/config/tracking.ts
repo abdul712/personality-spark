@@ -10,31 +10,11 @@ export interface TrackingScript {
 }
 
 // Get environment variables with fallbacks
-const JOURNEY_SCRIPT_ID = import.meta.env.VITE_JOURNEY_SCRIPT_ID || '';
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || '';
 const GOOGLE_SITE_VERIFICATION = import.meta.env.VITE_GOOGLE_SITE_VERIFICATION || '';
 const FB_PIXEL_ID = import.meta.env.VITE_FB_PIXEL_ID || '';
 const CUSTOM_HEAD_SCRIPTS = import.meta.env.VITE_CUSTOM_HEAD_SCRIPTS || '';
 const CUSTOM_BODY_SCRIPTS = import.meta.env.VITE_CUSTOM_BODY_SCRIPTS || '';
-
-// Journey.ai tracking configuration
-const journeyScript = {
-  id: 'journey-ai',
-  name: 'Journey AI',
-  enabled: !!JOURNEY_SCRIPT_ID,
-  script: JOURNEY_SCRIPT_ID ? `
-    <script>
-      (function() {
-        var script = document.createElement('script');
-        script.src = 'https://cdn.journey.ai/journey.min.js';
-        script.setAttribute('data-journey-id', '${JOURNEY_SCRIPT_ID}');
-        script.async = true;
-        document.head.appendChild(script);
-      })();
-    </script>
-  ` : '',
-  position: 'head' as const
-};
 
 // Google Analytics configuration
 const googleAnalyticsScript = {
@@ -109,7 +89,6 @@ const customBodyScript = {
 
 // Export all tracking scripts
 export const trackingScripts: TrackingScript[] = [
-  journeyScript,
   googleAnalyticsScript,
   googleSearchConsoleScript,
   facebookPixelScript,
