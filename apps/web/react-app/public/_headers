@@ -1,0 +1,12 @@
+# Headers for static JSON files
+/blog-index.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600
+
+/blog-data-*.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600
+
+/blog-data.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=3600

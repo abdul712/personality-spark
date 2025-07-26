@@ -19,6 +19,11 @@ const BlogPost: React.FC = () => {
 
   useEffect(() => {
     if (slug) {
+      // Don't try to fetch JSON files as blog posts
+      if (slug.endsWith('.json')) {
+        window.location.href = `/${slug}`;
+        return;
+      }
       fetchBlogPost(slug);
     }
   }, [slug]);
