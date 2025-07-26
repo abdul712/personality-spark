@@ -1,69 +1,56 @@
-# React + TypeScript + Vite
+# Personality Spark Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the main frontend application for PersonalitySpark.com, built with React + TypeScript + Vite.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Blog System**: Displays 1,718+ personality articles with chunked data loading
+- **Quiz System**: Interactive personality quizzes and assessments  
+- **Responsive Design**: Works on mobile and desktop
+- **Performance Optimized**: Uses chunked JSON loading to handle large datasets
 
-## Expanding the ESLint configuration
+## Key Files
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Blog Components**: `src/pages/BlogList.tsx`, `src/pages/BlogPost.tsx`
+- **Chunked Data**: `public/blog-data-1.json` through `public/blog-data-4.json`
+- **Data Index**: `public/blog-index.json` - Contains metadata for all chunks
+- **Routing Config**: `public/_routes.json` - Cloudflare Pages routing configuration
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Development
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
+# Opens at http://localhost:3000
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Deployment
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+This app is deployed to Cloudflare Pages. See `../CLOUDFLARE_PAGES_SETUP.md` for deployment configuration.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+**Build command**: `cd apps/web/react-app && npm install && npm run build:cloudflare`
+**Build output**: `apps/web/react-app/dist`
+
+## Blog Data Architecture
+
+The blog system handles 1,718 articles by splitting them into chunks:
+
+1. **blog-index.json** - Contains metadata about chunks (4 chunks, 500 posts each)
+2. **blog-data-1.json** through **blog-data-4.json** - Contains the actual article data
+3. **_routes.json** - Ensures JSON files are served as static assets, not caught by React router
+
+The BlogList component automatically loads all chunks in parallel for optimal performance.
+
+## Technical Setup
+
+Built with:
+- React 19 + TypeScript
+- Vite for build tooling
+- React Router for navigation
+- Tailwind CSS for styling
+- Framer Motion for animations
+- Lucide React for icons
+
+## Previous Template Info
+
+This was originally based on a React + TypeScript + Vite template. For ESLint configuration details, see the git history of this file.

@@ -12,8 +12,8 @@ This guide explains how to deploy the Personality Spark frontend to Cloudflare P
 
 ### Build Settings
 - **Framework preset**: None
-- **Build command**: `cd apps/web && npm install && npm run build:cloudflare`
-- **Build output directory**: `apps/web/dist`
+- **Build command**: `cd apps/web/react-app && npm install && npm run build:cloudflare`
+- **Build output directory**: `apps/web/react-app/dist`
 - **Root directory**: `/` (repository root)
 - **Node version**: 18 or higher
 
@@ -34,15 +34,14 @@ REACT_APP_ADSENSE_CLIENT_ID=ca-pub-XXXXXXXXXXXXXXXX
 
 ### Setup
 ```bash
-cd apps/web
+cd apps/web/react-app
 npm install
-cp .env.example .env.local
-# Edit .env.local with your local API URL
+# No .env file needed - uses default API URL
 ```
 
 ### Run Development Server
 ```bash
-npm start
+npm run dev
 # Opens at http://localhost:3000
 ```
 
