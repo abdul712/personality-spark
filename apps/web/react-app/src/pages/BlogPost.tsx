@@ -42,27 +42,56 @@ const BlogPost: React.FC = () => {
         }
         setPost(data);
       } else {
-        // Fallback to static data
-        const fallbackResponse = await fetch('/blog-data.json');
-        const fallbackData = await fallbackResponse.json();
-        const foundPost = fallbackData.posts.find((p: BlogPost) => p.slug === postSlug);
-        if (foundPost) {
-          // Strip the first h1 from content
-          if (foundPost.content) {
-            foundPost.content = stripFirstH1(foundPost.content);
+        // Fallback to static data - try chunks first
+        try {
+          const indexResponse = await fetch('/blog-index.json');
+          const indexData = await indexResponse.json();
+          
+          // Load chunks and search for the post
+          let foundPost = null;
+          for (const chunkInfo of indexData.chunks) {
+            const chunkResponse = await fetch(`/${chunkInfo.file}`);
+            const chunkData = await chunkResponse.json();
+            foundPost = chunkData.posts.find((p: BlogPost) => p.slug === postSlug);
+            if (foundPost) break;
           }
-          setPost(foundPost);
+          
+          if (foundPost) {
+            if (foundPost.content) {
+              foundPost.content = stripFirstH1(foundPost.content);
+            }
+            setPost(foundPost);
+          }
+        } catch (chunkError) {
+          // Last resort: try original blog-data.json
+          const fallbackResponse = await fetch('/blog-data.json');
+          const fallbackData = await fallbackResponse.json();
+          const foundPost = fallbackData.posts.find((p: BlogPost) => p.slug === postSlug);
+          if (foundPost) {
+            if (foundPost.content) {
+              foundPost.content = stripFirstH1(foundPost.content);
+            }
+            setPost(foundPost);
+          }
         }
       }
     } catch (error) {
       console.error('Error fetching blog post:', error);
-      // Try fallback
+      // Try fallback with chunks
       try {
-        const fallbackResponse = await fetch('/blog-data.json');
-        const fallbackData = await fallbackResponse.json();
-        const foundPost = fallbackData.posts.find((p: BlogPost) => p.slug === postSlug);
+        const indexResponse = await fetch('/blog-index.json');
+        const indexData = await indexResponse.json();
+        
+        // Load chunks and search for the post
+        let foundPost = null;
+        for (const chunkInfo of indexData.chunks) {
+          const chunkResponse = await fetch(`/${chunkInfo.file}`);
+          const chunkData = await chunkResponse.json();
+          foundPost = chunkData.posts.find((p: BlogPost) => p.slug === postSlug);
+          if (foundPost) break;
+        }
+        
         if (foundPost) {
-          // Strip the first h1 from content
           if (foundPost.content) {
             foundPost.content = stripFirstH1(foundPost.content);
           }

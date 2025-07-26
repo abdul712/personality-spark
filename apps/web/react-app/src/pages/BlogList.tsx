@@ -43,14 +43,35 @@ const BlogList: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching blog posts:', error);
-      // Fallback to static data
+      // Fallback to static data - load from chunks
       try {
-        const fallbackResponse = await fetch('/blog-data.json');
-        const fallbackData = await fallbackResponse.json();
-        setAllPosts(fallbackData.posts);
-        setTotalPages(Math.ceil(fallbackData.posts.length / POSTS_PER_PAGE));
+        // First, load the index to know how many chunks we have
+        const indexResponse = await fetch('/blog-index.json');
+        const indexData = await indexResponse.json();
+        
+        // Load all chunks in parallel
+        const chunkPromises = indexData.chunks.map(chunk => 
+          fetch(`/${chunk.file}`).then(res => res.json())
+        );
+        
+        const chunks = await Promise.all(chunkPromises);
+        
+        // Combine all posts from chunks
+        const allPostsFromChunks = chunks.flatMap(chunk => chunk.posts);
+        
+        setAllPosts(allPostsFromChunks);
+        setTotalPages(Math.ceil(allPostsFromChunks.length / POSTS_PER_PAGE));
       } catch (fallbackError) {
         console.error('Error fetching fallback data:', fallbackError);
+        // Try original blog-data.json as last resort
+        try {
+          const fallbackResponse = await fetch('/blog-data.json');
+          const fallbackData = await fallbackResponse.json();
+          setAllPosts(fallbackData.posts || []);
+          setTotalPages(Math.ceil((fallbackData.posts || []).length / POSTS_PER_PAGE));
+        } catch (lastError) {
+          console.error('Error fetching original blog data:', lastError);
+        }
       }
     } finally {
       setLoading(false);
