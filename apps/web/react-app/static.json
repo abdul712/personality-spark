@@ -1,0 +1,17 @@
+{
+  "root": "dist",
+  "clean_urls": true,
+  "routes": {
+    "/**": "index.html"
+  },
+  "headers": {
+    "/blog-*.json": {
+      "Content-Type": "application/json",
+      "Cache-Control": "public, max-age=3600"
+    },
+    "/*.json": {
+      "Content-Type": "application/json",
+      "Cache-Control": "public, max-age=3600"
+    }
+  }
+}

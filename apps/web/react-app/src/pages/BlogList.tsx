@@ -47,17 +47,23 @@ const BlogList: React.FC = () => {
       try {
         // First, load the index to know how many chunks we have
         const indexResponse = await fetch('/blog-index.json');
+        if (!indexResponse.ok) throw new Error('Failed to fetch blog index');
         const indexData = await indexResponse.json();
         
-        // Load all chunks in parallel
+        // Load all chunks in parallel with full URL
         const chunkPromises = indexData.chunks.map((chunk: any) => 
-          fetch(`/${chunk.file}`).then(res => res.json())
+          fetch(`/${chunk.file}`).then(res => {
+            if (!res.ok) throw new Error(`Failed to fetch ${chunk.file}`);
+            return res.json();
+          })
         );
         
         const chunks = await Promise.all(chunkPromises);
         
         // Combine all posts from chunks
         const allPostsFromChunks = chunks.flatMap(chunk => chunk.posts);
+        
+        console.log(`Loaded ${allPostsFromChunks.length} posts from ${chunks.length} chunks`);
         
         setAllPosts(allPostsFromChunks);
         setTotalPages(Math.ceil(allPostsFromChunks.length / POSTS_PER_PAGE));
