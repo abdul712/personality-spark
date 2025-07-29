@@ -11,6 +11,11 @@ interface BlogPost {
   readTime: string;
 }
 
+interface ChunkInfo {
+  file: string;
+  posts: number;
+}
+
 const POSTS_PER_PAGE = 20;
 
 const BlogList: React.FC = () => {
@@ -51,7 +56,7 @@ const BlogList: React.FC = () => {
         const indexData = await indexResponse.json();
         
         // Load all chunks in parallel with full URL
-        const chunkPromises = indexData.chunks.map((chunk: any) => 
+        const chunkPromises = indexData.chunks.map((chunk: ChunkInfo) => 
           fetch(`/${chunk.file}`).then(res => {
             if (!res.ok) throw new Error(`Failed to fetch ${chunk.file}`);
             return res.json();
@@ -112,7 +117,7 @@ const BlogList: React.FC = () => {
         ) : (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {displayedPosts.map((post, index) => (
+              {displayedPosts.map((post) => (
                 <React.Fragment key={post.id}>
                   <Link
                     to={`/${post.slug}`}

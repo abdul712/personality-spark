@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Footer } from '../components/Footer';
 import { FileText, Scale, UserCheck, Ban, AlertTriangle, Copyright, Globe, Gavel } from 'lucide-react';

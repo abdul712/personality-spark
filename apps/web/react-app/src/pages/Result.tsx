@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Share2, Download, RefreshCw, Home, TrendingUp, Heart, Brain, Target, Users } from 'lucide-react';
+import { Share2, Download, RefreshCw, Home, TrendingUp, Heart, Brain, Target, Users, AlertCircle } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Badge } from '../components/Badge';
@@ -39,6 +39,8 @@ const Result: React.FC = () => {
   const [result, setResult] = useState<QuizResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [sharing, setSharing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [shareSuccess, setShareSuccess] = useState(false);
 
   useEffect(() => {
     loadResult();
@@ -46,6 +48,7 @@ const Result: React.FC = () => {
 
   const loadResult = async () => {
     setLoading(true);
+    setError(null);
     try {
       // In production, this would call the actual API
       // const data = await quizService.getResult(resultId!);
@@ -58,12 +61,14 @@ const Result: React.FC = () => {
       }, 1000);
     } catch (error) {
       console.error('Failed to load result:', error);
+      setError('Failed to load your results. Please try again.');
       setLoading(false);
     }
   };
 
   const handleShare = async () => {
     setSharing(true);
+    setShareSuccess(false);
     try {
       // In production, this would create a share card
       // const shareData = await shareService.createShareCard(resultId!);
@@ -71,9 +76,19 @@ const Result: React.FC = () => {
       // For now, just copy to clipboard
       const shareUrl = window.location.href;
       await navigator.clipboard.writeText(shareUrl);
-      alert('Share link copied to clipboard!');
+      setShareSuccess(true);
+      setTimeout(() => setShareSuccess(false), 3000);
     } catch (error) {
       console.error('Failed to share:', error);
+      // Fallback for browsers that don't support clipboard API
+      const input = document.createElement('input');
+      input.value = window.location.href;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+      setShareSuccess(true);
+      setTimeout(() => setShareSuccess(false), 3000);
     } finally {
       setSharing(false);
     }
@@ -108,12 +123,27 @@ const Result: React.FC = () => {
     );
   }
 
-  if (!result) {
+  if (error || !result) {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600 dark:text-gray-400 mb-4">Failed to load results</p>
-          <Button onClick={() => navigate('/quiz-list')}>Try Another Quiz</Button>
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            Unable to Load Results
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            {error || 'Your results could not be loaded at this time.'}
+          </p>
+          <div className="space-y-3">
+            <Button onClick={loadResult} className="w-full">
+              Try Again
+            </Button>
+            <Button onClick={() => navigate('/quiz-list')} variant="outline" className="w-full">
+              Take Another Quiz
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -121,6 +151,21 @@ const Result: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
+      {/* Share Success Notification */}
+      {shareSuccess && (
+        <motion.div
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -50 }}
+          className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center"
+        >
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          Share link copied to clipboard!
+        </motion.div>
+      )}
+
       {/* Hero Section with Results */}
       <section className="relative overflow-hidden">
         {/* Animated gradient background */}

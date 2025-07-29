@@ -1,0 +1,93 @@
+# Page snapshot
+
+```yaml
+- banner:
+  - navigation:
+    - text: ✨ PersonalitySpark
+    - button "Quizzes"
+    - button "Blog"
+- text: AI-Powered Personality Analysis
+- heading "Discover Your True Self" [level=1]
+- paragraph: Unlock deep insights about your personality with AI-powered quizzes. Join millions discovering what makes them unique.
+- button "Start Free Quiz"
+- button "Watch Demo"
+- paragraph: 48,400+
+- paragraph: Active Users
+- paragraph: 96+
+- paragraph: Unique Quizzes
+- paragraph: 968,000+
+- paragraph: Insights Shared
+- text: Features
+- heading "Why Choose Personality Spark?" [level=2]
+- paragraph: Experience the most advanced personality analysis platform powered by cutting-edge AI
+- heading "AI-Powered Analysis" [level=3]
+- paragraph: Advanced machine learning algorithms provide deep, accurate personality insights
+- heading "Instant Results" [level=3]
+- paragraph: Get comprehensive personality analysis in seconds, not hours
+- heading "100% Private" [level=3]
+- paragraph: Your data is encrypted and never shared. Take quizzes anonymously
+- heading "Track Progress" [level=3]
+- paragraph: Monitor your personality evolution over time with detailed analytics
+- heading "Compare & Share" [level=3]
+- paragraph: See how you match with friends and share insights on social media
+- heading "Always Fresh" [level=3]
+- paragraph: New AI-generated quizzes daily means endless discovery
+- text: Process
+- heading "How It Works" [level=2]
+- paragraph: Three simple steps to unlock your personality insights
+- text: "01"
+- heading "Choose Your Quiz" [level=3]
+- paragraph: Select from our curated collection of personality assessments, from quick 5-minute tests to deep-dive analyses
+- text: "02"
+- heading "Answer Honestly" [level=3]
+- paragraph: Respond to thought-provoking questions designed by psychologists and enhanced by AI
+- text: "03"
+- heading "Discover Insights" [level=3]
+- paragraph: Receive a detailed personality profile with actionable insights, strengths, and growth areas
+- text: Testimonials
+- heading "Loved by Millions" [level=2]
+- paragraph: See what our users are saying about their personality discovery journey
+- paragraph: "\"The insights were incredibly accurate! It helped me understand why I make certain decisions and how to improve my relationships.\""
+- paragraph: Sarah Chen
+- paragraph: Product Designer
+- paragraph: "\"I've taken many personality tests, but this one stands out. The AI analysis provided nuances I'd never considered before.\""
+- paragraph: Michael Rodriguez
+- paragraph: Software Engineer
+- paragraph: "\"Fun, engaging, and surprisingly deep. I learned things about myself that years of therapy hadn't uncovered!\""
+- paragraph: Emma Thompson
+- paragraph: Marketing Manager
+- heading "Ready to Meet the Real You?" [level=2]
+- paragraph: Join over 48,000 people who've discovered their authentic selves through our AI-powered personality analysis
+- button "Start Your Journey"
+- paragraph: No registration required • 100% free • 5 minutes to complete
+- contentinfo:
+  - heading "Personality Spark" [level=3]
+  - paragraph: Discover your true self with AI-powered personality insights. Join millions on their journey of self-discovery.
+  - heading "Quick Links" [level=4]
+  - list:
+    - listitem:
+      - link "About Us":
+        - /url: /about
+    - listitem:
+      - link "Privacy Policy":
+        - /url: /privacy
+    - listitem:
+      - link "Terms of Service":
+        - /url: /terms
+  - heading "Connect" [level=4]
+  - list:
+    - listitem:
+      - link "Twitter":
+        - /url: "#"
+    - listitem:
+      - link "Instagram":
+        - /url: "#"
+    - listitem:
+      - link "Facebook":
+        - /url: "#"
+  - paragraph: Made with by Personality Spark Team
+  - paragraph: © 2024 Personality Spark. All rights reserved.
+- button "Virginia Privacy Notice"
+- img
+- img
+```

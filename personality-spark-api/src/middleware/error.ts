@@ -1,8 +1,12 @@
 import { ErrorHandler } from 'hono';
 import type { Context } from '../types/env';
+import { logger, Logger } from '../utils/logger';
 
 export const errorHandler: ErrorHandler<Context> = (err, c) => {
-  console.error(`Error in ${c.req.method} ${c.req.url}:`, err);
+  const logContext = Logger.createContext(c);
+  
+  // Log the error with structured logging
+  logger.error(`Error in ${c.req.method} ${c.req.url}`, err, logContext);
 
   // Handle Zod validation errors
   if (err.name === 'ZodError') {
@@ -10,6 +14,7 @@ export const errorHandler: ErrorHandler<Context> = (err, c) => {
       error: 'Validation Error',
       message: 'Invalid request data',
       details: JSON.parse(err.message),
+      requestId: c.get('requestId'),
     }, 400);
   }
 
@@ -18,6 +23,7 @@ export const errorHandler: ErrorHandler<Context> = (err, c) => {
     return c.json({
       error: 'Authentication Error',
       message: 'Invalid or expired token',
+      requestId: c.get('requestId'),
     }, 401);
   }
 
@@ -26,6 +32,7 @@ export const errorHandler: ErrorHandler<Context> = (err, c) => {
     return c.json({
       error: 'Rate Limit Exceeded',
       message: 'Too many requests, please try again later',
+      requestId: c.get('requestId'),
     }, 429);
   }
 
@@ -34,6 +41,7 @@ export const errorHandler: ErrorHandler<Context> = (err, c) => {
     return c.json({
       error: 'Database Error',
       message: 'A database error occurred',
+      requestId: c.get('requestId'),
     }, 500);
   }
 
@@ -44,6 +52,7 @@ export const errorHandler: ErrorHandler<Context> = (err, c) => {
   return c.json({
     error: status === 500 ? 'Internal Server Error' : 'Error',
     message: message,
+    requestId: c.get('requestId'),
     ...(c.env.ENVIRONMENT === 'development' && { stack: err.stack }),
   }, status);
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Cpu, Zap, TrendingUp, Layers, Heart, Shield, Clock, HelpCircle, ArrowLeft } from 'lucide-react';
+import { Cpu, Zap, TrendingUp, Layers, Heart, Shield, Clock, HelpCircle, ArrowLeft, AlertCircle } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Badge } from '../components/Badge';
@@ -84,15 +84,24 @@ const QuizList: React.FC = () => {
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleStartQuiz = async (categoryId: string) => {
     setSelectedCategory(categoryId);
     setLoading(true);
+    setError(null);
     
-    // Simulate loading
-    setTimeout(() => {
-      navigate(`/quiz/${categoryId}`);
-    }, 1000);
+    try {
+      // Simulate loading
+      setTimeout(() => {
+        navigate(`/quiz/${categoryId}`);
+      }, 1000);
+    } catch (err) {
+      console.error('Failed to start quiz:', err);
+      setError('Failed to start quiz. Please try again.');
+      setLoading(false);
+      setSelectedCategory(null);
+    }
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -137,6 +146,28 @@ const QuizList: React.FC = () => {
       {/* Hero Section */}
       <section className="px-6 py-12 bg-gradient-to-b from-purple-50 to-transparent dark:from-purple-900/10">
         <div className="max-w-6xl mx-auto text-center">
+          {/* Error Alert */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 max-w-2xl mx-auto bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start text-left"
+            >
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mr-3 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-red-800 dark:text-red-200">{error}</p>
+              </div>
+              <button
+                onClick={() => setError(null)}
+                className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 ml-3"
+              >
+                <span className="sr-only">Dismiss</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </motion.div>
+          )}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

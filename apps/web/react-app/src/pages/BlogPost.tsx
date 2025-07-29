@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import DOMPurify from 'isomorphic-dompurify';
+import { AlertCircle } from 'lucide-react';
 import { Footer } from '../components/Footer';
 import '../styles/blog.css';
 
@@ -12,10 +14,12 @@ interface BlogPost {
   slug: string;
 }
 
+
 const BlogPost: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (slug) {
@@ -34,16 +38,39 @@ const BlogPost: React.FC = () => {
     const h1Regex = /<h1[^>]*>.*?<\/h1>/i;
     return content.replace(h1Regex, '').trim();
   };
+
+  // Sanitize HTML content to prevent XSS attacks
+  const sanitizeContent = (content: string): string => {
+    return DOMPurify.sanitize(content, {
+      ALLOWED_TAGS: [
+        'p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'code', 'pre', 'span',
+        'div', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+      ],
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'id', 'target', 'rel'],
+      ALLOW_DATA_ATTR: false,
+      FORCE_BODY: true,
+      RETURN_DOM: false,
+      RETURN_DOM_FRAGMENT: false,
+      RETURN_TRUSTED_TYPE: false,
+      SANITIZE_DOM: true,
+      KEEP_CONTENT: true,
+      ADD_TAGS: [],
+      ADD_ATTR: [],
+      ADD_URI_SAFE_ATTR: []
+    });
+  };
   
 
   const fetchBlogPost = async (postSlug: string) => {
+    setError(null);
     try {
       const response = await fetch(`/api/v1/blog/posts/${postSlug}`);
       if (response.ok) {
         const data = await response.json();
-        // Strip the first h1 from content
+        // Strip the first h1 from content and sanitize
         if (data.content) {
-          data.content = stripFirstH1(data.content);
+          data.content = sanitizeContent(stripFirstH1(data.content));
         }
         setPost(data);
       } else {
@@ -63,9 +90,11 @@ const BlogPost: React.FC = () => {
           
           if (foundPost) {
             if (foundPost.content) {
-              foundPost.content = stripFirstH1(foundPost.content);
+              foundPost.content = sanitizeContent(stripFirstH1(foundPost.content));
             }
             setPost(foundPost);
+          } else {
+            setError('Blog post not found');
           }
         } catch (chunkError) {
           // Last resort: try original blog-data.json
@@ -74,14 +103,17 @@ const BlogPost: React.FC = () => {
           const foundPost = fallbackData.posts.find((p: BlogPost) => p.slug === postSlug);
           if (foundPost) {
             if (foundPost.content) {
-              foundPost.content = stripFirstH1(foundPost.content);
+              foundPost.content = sanitizeContent(stripFirstH1(foundPost.content));
             }
             setPost(foundPost);
+          } else {
+            setError('Blog post not found');
           }
         }
       }
     } catch (error) {
       console.error('Error fetching blog post:', error);
+      setError('Failed to load blog post. Please try again later.');
       // Try fallback with chunks
       try {
         const indexResponse = await fetch('/blog-index.json');
@@ -98,12 +130,14 @@ const BlogPost: React.FC = () => {
         
         if (foundPost) {
           if (foundPost.content) {
-            foundPost.content = stripFirstH1(foundPost.content);
+            foundPost.content = sanitizeContent(stripFirstH1(foundPost.content));
           }
           setPost(foundPost);
+          setError(null); // Clear error if fallback succeeds
         }
       } catch (fallbackError) {
         console.error('Error fetching fallback data:', fallbackError);
+        setError('Failed to load blog post. Please check your connection and try again.');
       }
     } finally {
       setLoading(false);
@@ -118,14 +152,32 @@ const BlogPost: React.FC = () => {
     );
   }
 
-  if (!post) {
+  if (error || !post) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
         <div className="max-w-4xl mx-auto px-6 py-12 text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Post not found</h1>
-          <Link to="/blog" className="text-purple-600 hover:text-purple-700">
-            Back to Blog
-          </Link>
+          <div className="bg-white rounded-xl shadow-md p-8 max-w-md mx-auto">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <AlertCircle className="w-8 h-8 text-red-600" />
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800 mb-4">
+              {error || 'Post not found'}
+            </h1>
+            <p className="text-gray-600 mb-6">
+              {error 
+                ? 'We encountered an error loading this blog post.' 
+                : 'The blog post you are looking for does not exist.'}
+            </p>
+            <Link 
+              to="/blog" 
+              className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to Blog
+            </Link>
+          </div>
         </div>
       </div>
     );

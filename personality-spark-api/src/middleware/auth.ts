@@ -8,6 +8,15 @@ export const authenticate = (options?: {
   const { required = true } = options || {};
 
   return async (c, next) => {
+    // Validate JWT_SECRET configuration
+    if (!c.env.JWT_SECRET || c.env.JWT_SECRET.length < 32) {
+      console.error('JWT_SECRET is not configured or is too short');
+      return c.json({
+        error: 'Configuration Error',
+        message: 'Authentication service is not properly configured',
+      }, 500);
+    }
+
     const authHeader = c.req.header('Authorization');
     
     if (!authHeader) {

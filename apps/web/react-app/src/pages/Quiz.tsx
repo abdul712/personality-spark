@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, AlertCircle } from 'lucide-react';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Badge } from '../components/Badge';
@@ -78,6 +78,7 @@ const Quiz: React.FC = () => {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadQuiz();
@@ -85,6 +86,7 @@ const Quiz: React.FC = () => {
 
   const loadQuiz = async () => {
     setLoading(true);
+    setError(null);
     try {
       // In production, this would call the actual API
       // const data = await quizService.generateQuiz(quizType!);
@@ -97,6 +99,7 @@ const Quiz: React.FC = () => {
       }, 1000);
     } catch (error) {
       console.error('Failed to load quiz:', error);
+      setError('Failed to load quiz. Please try again.');
       setLoading(false);
     }
   };
@@ -124,6 +127,7 @@ const Quiz: React.FC = () => {
     if (!quiz) return;
     
     setSubmitting(true);
+    setError(null);
     try {
       // In production, this would submit to the API
       // const result = await quizService.submitQuiz(quiz.id, answers);
@@ -135,6 +139,7 @@ const Quiz: React.FC = () => {
       }, 1500);
     } catch (error) {
       console.error('Failed to submit quiz:', error);
+      setError('Failed to submit quiz. Please try again.');
       setSubmitting(false);
     }
   };
@@ -150,12 +155,27 @@ const Quiz: React.FC = () => {
     );
   }
 
-  if (!quiz) {
+  if (error || !quiz) {
     return (
       <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600 dark:text-gray-400 mb-4">Failed to load quiz</p>
-          <Button onClick={() => navigate('/quiz-list')}>Back to Quiz List</Button>
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+            <AlertCircle className="w-8 h-8 text-red-600 dark:text-red-400" />
+          </div>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+            Unable to Load Quiz
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            {error || 'Something went wrong while loading the quiz.'}
+          </p>
+          <div className="space-y-3">
+            <Button onClick={loadQuiz} className="w-full">
+              Try Again
+            </Button>
+            <Button onClick={() => navigate('/quiz-list')} variant="outline" className="w-full">
+              Back to Quiz List
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -195,6 +215,28 @@ const Quiz: React.FC = () => {
       {/* Quiz Content */}
       <section className="px-6 py-12">
         <div className="max-w-4xl mx-auto">
+          {/* Error Alert */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 flex items-start"
+            >
+              <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400 mr-3 flex-shrink-0 mt-0.5" />
+              <div className="flex-1">
+                <p className="text-red-800 dark:text-red-200">{error}</p>
+              </div>
+              <button
+                onClick={() => setError(null)}
+                className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 ml-3"
+              >
+                <span className="sr-only">Dismiss</span>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </motion.div>
+          )}
           <AnimatePresence mode="wait">
             <motion.div
               key={currentQuestion}

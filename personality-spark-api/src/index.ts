@@ -21,7 +21,52 @@ import { rateLimiter } from './middleware/rateLimit';
 // Import types
 import type { Context } from './types/env';
 
+// Import logger
+import { logger as structuredLogger, Logger } from './utils/logger';
+
 const app = new Hono<Context>();
+
+// Request ID middleware
+app.use('*', async (c, next) => {
+  // Generate unique request ID
+  const requestId = crypto.randomUUID ? crypto.randomUUID() : 
+    `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  
+  // Store in context for use throughout the request
+  c.set('requestId', requestId);
+  
+  // Add to response headers
+  c.header('X-Request-ID', requestId);
+  
+  await next();
+});
+
+// Structured logging middleware
+app.use('*', async (c, next) => {
+  const start = Date.now();
+  const logContext = Logger.createContext(c);
+  
+  // Log request
+  structuredLogger.info('Request received', logContext);
+  
+  await next();
+  
+  const duration = Date.now() - start;
+  const status = c.res.status;
+  
+  // Log response
+  const responseContext = {
+    ...logContext,
+    statusCode: status,
+    duration,
+  };
+  
+  if (status >= 400) {
+    structuredLogger.warn('Request failed', responseContext);
+  } else {
+    structuredLogger.info('Request completed', responseContext);
+  }
+});
 
 // Global middleware
 app.use('*', logger());
@@ -34,16 +79,29 @@ app.use('*', etag());
 app.use('*', secureHeaders());
 
 // CORS configuration
+const ALLOWED_ORIGINS = [
+  'https://personalityspark.com',
+  'https://www.personalityspark.com',
+  // Development origins - exact match only
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:8080',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:8080'
+];
+
 app.use('*', cors({
   origin: (origin) => {
-    // Allow localhost in development
-    if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
+    // Allow requests with no origin (e.g., mobile apps, Postman)
+    if (!origin) return null;
+    
+    // Check against whitelist with exact matching
+    if (ALLOWED_ORIGINS.includes(origin)) {
       return origin;
     }
-    // Allow production domains
-    if (origin.includes('personalityspark.com')) {
-      return origin;
-    }
+    
+    // Reject all other origins
     return null;
   },
   credentials: true,
@@ -58,12 +116,82 @@ app.use('*', rateLimiter());
 app.onError(errorHandler);
 
 // Health check endpoint
-app.get('/health', (c) => {
-  return c.json({
+app.get('/health', async (c) => {
+  const checks = {
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    environment: c.env.ENVIRONMENT,
-  });
+    environment: c.env.ENVIRONMENT || 'production',
+    requestId: c.get('requestId'),
+    checks: {
+      api: 'healthy',
+      database: 'unknown',
+      cache: 'unknown',
+      rateLimiter: 'unknown',
+    },
+    version: '1.0.0',
+  };
+
+  // Check database connectivity (if DATABASE binding exists)
+  if (c.env.DATABASE) {
+    try {
+      // Simple query to check database connection
+      await c.env.DATABASE.prepare('SELECT 1').first();
+      checks.checks.database = 'healthy';
+    } catch (error) {
+      checks.checks.database = 'unhealthy';
+      checks.status = 'degraded';
+    }
+  } else {
+    checks.checks.database = 'not_configured';
+  }
+
+  // Check cache availability (KV store)
+  if (c.env.KV_CACHE) {
+    try {
+      // Try to read a test key
+      await c.env.KV_CACHE.get('health_check_test');
+      checks.checks.cache = 'healthy';
+    } catch (error) {
+      checks.checks.cache = 'unhealthy';
+      checks.status = 'degraded';
+    }
+  } else {
+    checks.checks.cache = 'not_configured';
+  }
+
+  // Check rate limiter
+  if (c.env.RATE_LIMITER) {
+    try {
+      // Create a test rate limiter instance
+      const testId = c.env.RATE_LIMITER.idFromName('health_check_test');
+      const testStub = c.env.RATE_LIMITER.get(testId);
+      
+      // Make a test request
+      const response = await testStub.fetch(
+        new Request('http://rate-limiter', {
+          method: 'POST',
+          body: JSON.stringify({ key: 'health_check', limit: 1, window: 1000 }),
+        })
+      );
+      
+      if (response.ok) {
+        checks.checks.rateLimiter = 'healthy';
+      } else {
+        checks.checks.rateLimiter = 'unhealthy';
+        checks.status = 'degraded';
+      }
+    } catch (error) {
+      checks.checks.rateLimiter = 'unhealthy';
+      checks.status = 'degraded';
+    }
+  } else {
+    checks.checks.rateLimiter = 'not_configured';
+  }
+
+  // Return appropriate status code
+  const statusCode = checks.status === 'healthy' ? 200 : 503;
+  
+  return c.json(checks, statusCode);
 });
 
 // Debug endpoint - minimal response
@@ -102,8 +230,9 @@ app.get('/sitemap*.xml', async (c) => {
         status: 200,
         headers: {
           'content-type': 'application/xml;charset=UTF-8',
-          'cache-control': 'public, max-age=3600', // Cache for 1 hour
+          'cache-control': 'public, max-age=3600, must-revalidate', // Cache for 1 hour
           'x-robots-tag': 'noindex', // Sitemaps shouldn't be indexed themselves
+          'x-request-id': c.get('requestId'),
         },
       });
     }
@@ -192,16 +321,39 @@ app.get('*', async (c) => {
           headers.set('content-type', 'application/xml;charset=UTF-8');
         }
         
-        // Cache static assets
-        if (url.pathname.match(/\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i)) {
-          // Cache static assets for 1 day
-          headers.set('cache-control', 'public, max-age=86400');
+        // Determine cache strategy based on file type
+        const isHashedAsset = /\.[0-9a-f]{8,}\.(js|css)$/i.test(url.pathname) || 
+                            /-[0-9a-f]{8,}\.(js|css)$/i.test(url.pathname);
+        
+        if (isHashedAsset) {
+          // Immutable cache for hashed assets (fingerprinted files)
+          headers.set('cache-control', 'public, max-age=31536000, immutable');
+        } else if (url.pathname.match(/\.(js|css)$/i)) {
+          // Non-hashed JS/CSS files - cache for 1 hour
+          headers.set('cache-control', 'public, max-age=3600, must-revalidate');
+        } else if (url.pathname.match(/\.(png|jpg|jpeg|gif|svg|ico|webp|avif)$/i)) {
+          // Images - cache for 7 days
+          headers.set('cache-control', 'public, max-age=604800');
+        } else if (url.pathname.match(/\.(woff|woff2|ttf|eot|otf)$/i)) {
+          // Fonts - cache for 30 days
+          headers.set('cache-control', 'public, max-age=2592000');
         } else if (url.pathname.endsWith('.xml')) {
-          // Cache XML files (sitemaps) for 1 hour
+          // XML files (sitemaps) - cache for 1 hour
           headers.set('cache-control', 'public, max-age=3600');
+        } else if (url.pathname.endsWith('.json')) {
+          // JSON files - cache for 5 minutes (API responses)
+          headers.set('cache-control', 'public, max-age=300, must-revalidate');
+        } else if (url.pathname.endsWith('.html')) {
+          // HTML files - no cache
+          headers.set('cache-control', 'no-cache, must-revalidate');
         } else {
-          // Default cache for other files
+          // Default cache for other files - 1 hour
           headers.set('cache-control', 'public, max-age=3600');
+        }
+        
+        // Add CORS headers for font files
+        if (url.pathname.match(/\.(woff|woff2|ttf|eot|otf)$/i)) {
+          headers.set('access-control-allow-origin', '*');
         }
         
         return new Response(response.body, {

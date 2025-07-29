@@ -47,6 +47,21 @@ A production-ready Cloudflare Workers API for the Personality Spark application,
 - `GET /api/v1/analytics/dashboard` - Admin dashboard
 - `POST /api/v1/analytics/batch` - Batch track events
 
+## Security Configuration
+
+### Environment Variables
+Copy `.env.example` to `.env` and configure:
+- `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare account ID
+- `JWT_SECRET`: Minimum 32 characters for secure authentication
+- AI service keys as needed
+
+### Security Features
+- **CORS**: Strict origin validation with exact matching whitelist
+- **Input Validation**: All user inputs validated with Zod schemas
+- **SQL Injection Protection**: Parameterized queries throughout
+- **JWT Validation**: Secret strength validation at runtime
+- **Rate Limiting**: Built-in rate limiting with Durable Objects
+
 ## Development
 
 ### Prerequisites

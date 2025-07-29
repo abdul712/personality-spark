@@ -4,7 +4,7 @@ compatibility_date = "2025-07-18"
 compatibility_flags = ["global_fetch_strictly_public"]
 
 # Account details (from root wrangler.toml)
-account_id = "79c03e5169d22c2c869d0d3c80932187"
+# account_id should be set via environment variable CLOUDFLARE_ACCOUNT_ID
 
 # Workers AI for quiz generation
 [ai]

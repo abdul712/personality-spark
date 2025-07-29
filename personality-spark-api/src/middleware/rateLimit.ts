@@ -60,20 +60,65 @@ export class RateLimiter {
   }
 }
 
+// Rate limit tiers configuration
+export interface RateLimitTier {
+  limit: number;
+  window: number;
+  pathPattern?: RegExp;
+}
+
+// Default rate limit tiers
+export const DEFAULT_RATE_LIMIT_TIERS: RateLimitTier[] = [
+  // Expensive AI operations: 10 requests per minute
+  { pathPattern: /^\/api\/v1\/ai\/generate/, limit: 10, window: 60000 },
+  { pathPattern: /^\/api\/v1\/quizzes\/generate/, limit: 15, window: 60000 },
+  
+  // Moderate operations: 30 requests per minute
+  { pathPattern: /^\/api\/v1\/quizzes\/submit/, limit: 30, window: 60000 },
+  { pathPattern: /^\/api\/v1\/share\//, limit: 30, window: 60000 },
+  { pathPattern: /^\/api\/v1\/user\//, limit: 30, window: 60000 },
+  
+  // Light operations: 60 requests per minute
+  { pathPattern: /^\/api\/v1\/quizzes\/(categories|daily|result)/, limit: 60, window: 60000 },
+  { pathPattern: /^\/api\/v1\/analytics\//, limit: 60, window: 60000 },
+  
+  // Static content: 120 requests per minute
+  { pathPattern: /^\/api\/v1\/blog\//, limit: 120, window: 60000 },
+  { pathPattern: /\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i, limit: 200, window: 60000 },
+];
+
+// Get rate limit tier for a given path
+export const getRateLimitTier = (path: string, tiers: RateLimitTier[] = DEFAULT_RATE_LIMIT_TIERS): RateLimitTier => {
+  for (const tier of tiers) {
+    if (tier.pathPattern && tier.pathPattern.test(path)) {
+      return tier;
+    }
+  }
+  // Default tier
+  return { limit: 60, window: 60000 };
+};
+
 // Middleware function
 export const rateLimiter = (options?: {
   keyGenerator?: (c: any) => string;
   limit?: number;
   window?: number;
+  tiers?: RateLimitTier[];
 }): MiddlewareHandler<Context> => {
   const {
     keyGenerator = (c) => c.req.header('CF-Connecting-IP') || 'anonymous',
-    limit = 60,
-    window = 60000, // 1 minute
+    limit: defaultLimit = 60,
+    window: defaultWindow = 60000, // 1 minute
+    tiers = DEFAULT_RATE_LIMIT_TIERS,
   } = options || {};
 
   return async (c, next) => {
-    const key = keyGenerator(c);
+    const path = new URL(c.req.url).pathname;
+    const tier = getRateLimitTier(path, tiers);
+    const limit = tier.limit || defaultLimit;
+    const window = tier.window || defaultWindow;
+    
+    const key = `${keyGenerator(c)}:${path}`;
     const rateLimiterId = c.env.RATE_LIMITER.idFromName(key);
     const rateLimiterStub = c.env.RATE_LIMITER.get(rateLimiterId);
     

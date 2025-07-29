@@ -1,7 +1,20 @@
 import { Hono } from 'hono';
+import { zValidator } from '@hono/zod-validator';
+import { z } from 'zod';
 import type { Context } from '../types/env';
 
 export const blogRouter = new Hono<Context>();
+
+// Query parameter schemas
+const PaginationSchema = z.object({
+  page: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(1000)).optional().default('1'),
+  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(100)).optional().default('20'),
+  search: z.string().max(100).optional()
+});
+
+const RelatedPostsSchema = z.object({
+  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(20)).optional().default('5')
+});
 
 // Load blog data from static file or KV
 async function loadBlogData(c: any) {
@@ -42,46 +55,57 @@ async function loadBlogData(c: any) {
 }
 
 // Get all blog posts
-blogRouter.get('/posts', async (c) => {
-  const page = parseInt(c.req.query('page') || '1');
-  const limit = parseInt(c.req.query('limit') || '20');
-  const search = c.req.query('search');
-  
-  const data = await loadBlogData(c);
-  let posts = data.posts || [];
-  
-  // Search functionality
-  if (search) {
-    const searchLower = search.toLowerCase();
-    posts = posts.filter((post: any) =>
-      post.title.toLowerCase().includes(searchLower) ||
-      post.excerpt.toLowerCase().includes(searchLower)
-    );
+blogRouter.get('/posts', 
+  zValidator('query', PaginationSchema),
+  async (c) => {
+    const { page, limit, search } = c.req.valid('query');
+    
+    const data = await loadBlogData(c);
+    let posts = data.posts || [];
+    
+    // Search functionality with sanitized input
+    if (search) {
+      const searchLower = search.toLowerCase();
+      posts = posts.filter((post: any) =>
+        post.title.toLowerCase().includes(searchLower) ||
+        post.excerpt.toLowerCase().includes(searchLower)
+      );
+    }
+    
+    // Pagination with validated bounds
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    const paginatedPosts = posts.slice(start, end);
+    
+    return c.json({
+      posts: paginatedPosts.map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt,
+        date: post.date,
+        slug: post.slug,
+        readTime: post.readTime
+      })),
+      total: posts.length,
+      page: page,
+      pages: Math.ceil(posts.length / limit)
+    });
   }
-  
-  // Pagination
-  const start = (page - 1) * limit;
-  const end = start + limit;
-  const paginatedPosts = posts.slice(start, end);
-  
-  return c.json({
-    posts: paginatedPosts.map((post: any) => ({
-      id: post.id,
-      title: post.title,
-      excerpt: post.excerpt,
-      date: post.date,
-      slug: post.slug,
-      readTime: post.readTime
-    })),
-    total: posts.length,
-    page: page,
-    pages: Math.ceil(posts.length / limit)
-  });
-});
+);
 
 // Get a single blog post by slug
 blogRouter.get('/posts/:slug', async (c) => {
   const slug = c.req.param('slug');
+  
+  // Validate slug format - alphanumeric with hyphens only
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  if (!slugRegex.test(slug) || slug.length > 100) {
+    return c.json({ 
+      error: 'Invalid slug format',
+      message: 'Slug must contain only lowercase letters, numbers, and hyphens'
+    }, 400);
+  }
+  
   const data = await loadBlogData(c);
   const posts = data.posts || [];
   
@@ -95,34 +119,46 @@ blogRouter.get('/posts/:slug', async (c) => {
 });
 
 // Get related posts
-blogRouter.get('/posts/:slug/related', async (c) => {
-  const slug = c.req.param('slug');
-  const limit = parseInt(c.req.query('limit') || '5');
-  
-  const data = await loadBlogData(c);
-  const posts = data.posts || [];
-  
-  // Find current post
-  const currentPost = posts.find((p: any) => p.slug === slug);
-  if (!currentPost) {
-    return c.json({ error: 'Blog post not found' }, 404);
+blogRouter.get('/posts/:slug/related', 
+  zValidator('query', RelatedPostsSchema),
+  async (c) => {
+    const slug = c.req.param('slug');
+    const { limit } = c.req.valid('query');
+    
+    // Validate slug format
+    const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+    if (!slugRegex.test(slug) || slug.length > 100) {
+      return c.json({ 
+        error: 'Invalid slug format',
+        message: 'Slug must contain only lowercase letters, numbers, and hyphens'
+      }, 400);
+    }
+    
+    const data = await loadBlogData(c);
+    const posts = data.posts || [];
+    
+    // Find current post
+    const currentPost = posts.find((p: any) => p.slug === slug);
+    if (!currentPost) {
+      return c.json({ error: 'Blog post not found' }, 404);
+    }
+    
+    // Get related posts (excluding current)
+    const related = posts
+      .filter((p: any) => p.slug !== slug)
+      .slice(0, limit);
+    
+    return c.json({
+      posts: related.map((post: any) => ({
+        id: post.id,
+        title: post.title,
+        excerpt: post.excerpt,
+        slug: post.slug,
+        readTime: post.readTime
+      }))
+    });
   }
-  
-  // Get related posts (excluding current)
-  const related = posts
-    .filter((p: any) => p.slug !== slug)
-    .slice(0, limit);
-  
-  return c.json({
-    posts: related.map((post: any) => ({
-      id: post.id,
-      title: post.title,
-      excerpt: post.excerpt,
-      slug: post.slug,
-      readTime: post.readTime
-    }))
-  });
-});
+);
 
 // Get blog categories
 blogRouter.get('/categories', async (c) => {

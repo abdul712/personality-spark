@@ -6,8 +6,13 @@ import { QuizSubmissionSchema } from '../types/models';
 import { authenticate } from '../middleware/auth';
 import { QuizService } from '../services/quizService';
 import { CacheService } from '../services/cacheService';
+import { logger, Logger } from '../utils/logger';
 
 const quizRouter = new Hono<Context>();
+
+// Allowed quiz types for validation
+const ALLOWED_QUIZ_TYPES = ['big5', 'daily', 'quick5', 'thisorthat', 'mood'];
+const ALLOWED_DIFFICULTIES = ['easy', 'medium', 'hard'];
 
 // GET /generate/:quiz_type - Generate new AI quiz
 quizRouter.get('/generate/:quiz_type',
@@ -17,34 +22,70 @@ quizRouter.get('/generate/:quiz_type',
     const theme = c.req.query('theme');
     const difficulty = c.req.query('difficulty') as 'easy' | 'medium' | 'hard' | undefined;
     
+    // Validate quiz type against allowed values
+    if (!ALLOWED_QUIZ_TYPES.includes(quizType)) {
+      return c.json({
+        error: 'Invalid Quiz Type',
+        message: 'The specified quiz type is not supported',
+        validTypes: ALLOWED_QUIZ_TYPES
+      }, 400);
+    }
+    
+    // Validate difficulty if provided
+    if (difficulty && !ALLOWED_DIFFICULTIES.includes(difficulty)) {
+      return c.json({
+        error: 'Invalid Difficulty',
+        message: 'Difficulty must be one of: easy, medium, hard',
+      }, 400);
+    }
+    
+    // Sanitize theme input - alphanumeric and spaces only
+    const sanitizedTheme = theme ? theme.replace(/[^a-zA-Z0-9\s]/g, '').slice(0, 50) : undefined;
+    
     const cacheService = new CacheService(c.env.CACHE);
     const quizService = new QuizService(c.env.AI, cacheService);
     
     try {
+      const logContext = {
+        ...Logger.createContext(c),
+        quizType,
+        theme: sanitizedTheme,
+        difficulty,
+      };
+      
       // Check cache first
-      const cacheKey = `quiz:${quizType}:${theme || 'default'}:${difficulty || 'medium'}`;
+      const cacheKey = `quiz:${quizType}:${sanitizedTheme || 'default'}:${difficulty || 'medium'}`;
       const cached = await cacheService.get(cacheKey);
       
       if (cached) {
+        logger.info('Quiz served from cache', { ...logContext, cacheKey });
         return c.json(cached);
       }
       
       // Generate new quiz
+      logger.info('Generating new quiz', logContext);
       const quiz = await quizService.generateQuiz({
         type: quizType,
-        theme,
+        theme: sanitizedTheme,
         difficulty,
       });
       
       // Cache for 1 hour
       await cacheService.set(cacheKey, quiz, 3600);
+      logger.info('Quiz cached successfully', { ...logContext, cacheKey });
       
       return c.json(quiz);
     } catch (error) {
-      console.error('Error generating quiz:', error);
+      logger.error('Error generating quiz', error as Error, {
+        ...Logger.createContext(c),
+        quizType,
+        theme: sanitizedTheme,
+        difficulty,
+      });
       return c.json({
         error: 'Quiz Generation Failed',
         message: 'Unable to generate quiz at this time',
+        requestId: c.get('requestId'),
       }, 500);
     }
   }
@@ -136,6 +177,15 @@ quizRouter.post('/submit',
 // GET /result/:result_id - Get quiz results
 quizRouter.get('/result/:result_id', async (c) => {
   const resultId = c.req.param('result_id');
+  
+  // Validate result ID format (UUID)
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuidRegex.test(resultId)) {
+    return c.json({
+      error: 'Invalid Result ID',
+      message: 'The provided result ID is not valid',
+    }, 400);
+  }
   
   try {
     // Check cache first
