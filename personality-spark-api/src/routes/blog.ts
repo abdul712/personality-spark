@@ -8,7 +8,7 @@ export const blogRouter = new Hono<Context>();
 // Query parameter schemas
 const PaginationSchema = z.object({
   page: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(1000)).optional().default('1'),
-  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(100)).optional().default('20'),
+  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(2000)).optional().default('20'),
   search: z.string().max(100).optional()
 });
 
@@ -16,11 +16,11 @@ const RelatedPostsSchema = z.object({
   limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(20)).optional().default('5')
 });
 
-// Load blog data from static file or KV
+// Load blog data from chunked files or KV
 async function loadBlogData(c: any) {
   try {
     // Try to get blog data from KV storage first
-    const cached = await c.env.CACHE.get('blog-data', 'json');
+    const cached = await c.env.CACHE.get('blog-data-all', 'json');
     if (cached && cached.posts && cached.posts.length > 0) {
       return cached;
     }
@@ -29,25 +29,60 @@ async function loadBlogData(c: any) {
   }
   
   try {
-    // Fetch from the static blog-data.json file served by the Worker
+    // First load the index to know about chunks
     const url = new URL(c.req.url);
-    const blogDataUrl = `${url.protocol}//${url.host}/blog-data.json`;
-    const response = await fetch(blogDataUrl);
+    const indexUrl = `${url.protocol}//${url.host}/blog-index.json`;
+    const indexResponse = await fetch(indexUrl);
     
-    if (response.ok) {
-      const data = await response.json();
-      // Cache it in KV for future use
-      try {
-        await c.env.CACHE.put('blog-data', JSON.stringify(data), {
-          expirationTtl: 3600 // Cache for 1 hour
-        });
-      } catch (cacheError) {
-        console.error('Error caching blog data:', cacheError);
-      }
-      return data;
+    if (!indexResponse.ok) {
+      throw new Error('Failed to fetch blog index');
     }
+    
+    const indexData = await indexResponse.json();
+    
+    // Load all chunks in parallel
+    const chunkPromises = indexData.chunks.map(async (chunk: any) => {
+      const chunkUrl = `${url.protocol}//${url.host}/${chunk.file}`;
+      const response = await fetch(chunkUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch ${chunk.file}`);
+      }
+      return response.json();
+    });
+    
+    const chunks = await Promise.all(chunkPromises);
+    
+    // Combine all posts from chunks
+    const allPosts = chunks.flatMap(chunk => chunk.posts);
+    
+    const data = { posts: allPosts };
+    
+    // Cache the combined data in KV for future use
+    try {
+      await c.env.CACHE.put('blog-data-all', JSON.stringify(data), {
+        expirationTtl: 3600 // Cache for 1 hour
+      });
+    } catch (cacheError) {
+      console.error('Error caching blog data:', cacheError);
+    }
+    
+    return data;
   } catch (error) {
-    console.error('Error fetching blog data:', error);
+    console.error('Error loading blog data from chunks:', error);
+    
+    // Fallback to original blog-data.json if chunks fail
+    try {
+      const url = new URL(c.req.url);
+      const blogDataUrl = `${url.protocol}//${url.host}/blog-data.json`;
+      const response = await fetch(blogDataUrl);
+      
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      }
+    } catch (fallbackError) {
+      console.error('Error fetching fallback blog data:', fallbackError);
+    }
   }
   
   // Return empty data as last resort
