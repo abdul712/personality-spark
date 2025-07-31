@@ -115,7 +115,6 @@ export class Logger {
   }
 }
 
-// Export singleton instance
-export const logger = Logger.getInstance(
-  process.env.LOG_LEVEL as LogLevel || LogLevel.INFO
-);
+// Export singleton instance with default log level
+// In Cloudflare Workers, we can't use process.env
+export const logger = Logger.getInstance(LogLevel.INFO);
