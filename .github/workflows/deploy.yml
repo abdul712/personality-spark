@@ -19,6 +19,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: 'apps/web/react-app/package-lock.json'
 
       - name: Install dependencies - React App
         run: |
@@ -42,8 +43,8 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          workingDirectory: '.'
-          command: deploy --compatibility-date=2024-12-27
+          workingDirectory: 'personality-spark-api'
+          command: deploy --compatibility-date=2025-07-18
           packageManager: npm
 
       - name: Verify deployment
