@@ -53,6 +53,10 @@ directory = "./personality-spark-api/public"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 
+# Build configuration
+[build]
+command = "npm run build"
+
 # Observability
 [observability]
 enabled = true
