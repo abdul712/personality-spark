@@ -48,14 +48,30 @@ API_VERSION = "v1"
 CORS_ORIGIN = "https://personalityspark.com"
 
 # Assets - serve the frontend from the Worker
+# Using new syntax for Wrangler 4.x
 [assets]
 directory = "./personality-spark-api/public"
 binding = "ASSETS"
 not_found_handling = "single-page-application"
 
+# Include all file types needed for the site
+include = ["**/*"]
+
+# Ensure XML files are served with correct MIME type
+[[assets.serve]]
+include = ["*.xml"]
+headers = { "content-type" = "application/xml;charset=UTF-8" }
+
 # Build configuration
 [build]
 command = "npm run build"
+
+# Routes configuration
+# Note: You need to add personalityspark.com to your Cloudflare account first
+routes = [
+  { pattern = "personalityspark.com/*", zone_name = "personalityspark.com" },
+  { pattern = "www.personalityspark.com/*", zone_name = "personalityspark.com" }
+]
 
 # Observability
 [observability]

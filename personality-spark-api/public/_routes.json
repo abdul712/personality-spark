@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "include": [
+    "/*"
+  ],
+  "exclude": [
+    "/blog-index.json",
+    "/blog-data-1.json",
+    "/blog-data-2.json", 
+    "/blog-data-3.json",
+    "/blog-data-4.json",
+    "/blog-data.json",
+    "/*.json",
+    "/assets/*",
+    "/*.js",
+    "/*.css",
+    "/*.png",
+    "/*.jpg",
+    "/*.svg",
+    "/*.ico"
+  ]
+}

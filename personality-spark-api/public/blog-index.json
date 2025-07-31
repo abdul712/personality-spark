@@ -1,0 +1,36 @@
+{
+  "totalPosts": 1718,
+  "totalChunks": 4,
+  "postsPerChunk": 500,
+  "chunks": [
+    {
+      "file": "blog-data-1.json",
+      "chunk": 1,
+      "start": 0,
+      "end": 499,
+      "count": 500
+    },
+    {
+      "file": "blog-data-2.json",
+      "chunk": 2,
+      "start": 500,
+      "end": 999,
+      "count": 500
+    },
+    {
+      "file": "blog-data-3.json",
+      "chunk": 3,
+      "start": 1000,
+      "end": 1499,
+      "count": 500
+    },
+    {
+      "file": "blog-data-4.json",
+      "chunk": 4,
+      "start": 1500,
+      "end": 1717,
+      "count": 218
+    }
+  ],
+  "generated": "2025-07-26T15:40:55.473Z"
+}
