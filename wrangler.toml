@@ -62,10 +62,6 @@ include = ["**/*"]
 include = ["*.xml"]
 headers = { "content-type" = "application/xml;charset=UTF-8" }
 
-# Build configuration
-[build]
-command = "npm run build"
-
 # Routes configuration
 # Note: You need to add personalityspark.com to your Cloudflare account first
 routes = [
