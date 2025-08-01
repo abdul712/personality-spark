@@ -7,20 +7,27 @@ export const blogRouter = new Hono<Context>();
 
 // Query parameter schemas
 const PaginationSchema = z.object({
-  page: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(1000)).optional().default('1'),
-  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(2000)).optional().default('20'),
+  page: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(1000)).optional().default(1),
+  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(2000)).optional().default(20),
   search: z.string().max(100).optional()
 });
 
 const RelatedPostsSchema = z.object({
-  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(20)).optional().default('5')
+  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().min(1).max(20)).optional().default(5)
 });
 
 // Load blog data from chunked files or KV
 async function loadBlogData(c: any) {
+  // KV cache versioning to avoid stale data between deploys
+  const VERSION =
+    (c.env && (c.env as any).BLOG_DATA_VERSION) ||
+    (c.env && (c.env as any).WORKER_VERSION) ||
+    'v1';
+  const kvKeyAll = `blog-data-all:${VERSION}`;
+
   try {
     // Try to get blog data from KV storage first
-    const cached = await c.env.CACHE.get('blog-data-all', 'json');
+    const cached = await c.env.CACHE.get(kvKeyAll, 'json');
     if (cached && cached.posts && cached.posts.length > 0) {
       return cached;
     }
@@ -31,18 +38,18 @@ async function loadBlogData(c: any) {
   try {
     // First load the index to know about chunks
     const url = new URL(c.req.url);
-    const indexUrl = `${url.protocol}//${url.host}/blog-index.json`;
+    const indexUrl = `${url.protocol}//${url.host}/blog-index.json?v=${VERSION}`;
     const indexResponse = await fetch(indexUrl);
     
     if (!indexResponse.ok) {
       throw new Error('Failed to fetch blog index');
     }
     
-    const indexData = await indexResponse.json();
+    const indexData: any = await indexResponse.json();
     
     // Load all chunks in parallel
-    const chunkPromises = indexData.chunks.map(async (chunk: any) => {
-      const chunkUrl = `${url.protocol}//${url.host}/${chunk.file}`;
+    const chunkPromises = (indexData.chunks as any[]).map(async (chunk: any) => {
+      const chunkUrl = `${url.protocol}//${url.host}/${chunk.file}?v=${VERSION}`;
       const response = await fetch(chunkUrl);
       if (!response.ok) {
         throw new Error(`Failed to fetch ${chunk.file}`);
@@ -57,9 +64,9 @@ async function loadBlogData(c: any) {
     
     const data = { posts: allPosts };
     
-    // Cache the combined data in KV for future use
+    // Cache the combined data in KV for future use (versioned key)
     try {
-      await c.env.CACHE.put('blog-data-all', JSON.stringify(data), {
+      await c.env.CACHE.put(kvKeyAll, JSON.stringify(data), {
         expirationTtl: 3600 // Cache for 1 hour
       });
     } catch (cacheError) {
@@ -149,9 +156,22 @@ blogRouter.get('/posts/:slug', async (c) => {
   if (!post) {
     return c.json({ error: 'Blog post not found' }, 404);
   }
-  
-  // Content is already HTML, no need to convert
-  return c.json(post);
+
+  // Defensive sanitization to avoid stale/bad placeholders
+  const sanitize = (html: any) => {
+    if (typeof html !== 'string') return '';
+    return html
+      .replace(/\[object Object\]/g, '')
+      .replace(/hundefined/g, 'h2');
+  };
+
+  const safePost = {
+    ...post,
+    content: sanitize(post.content),
+    excerpt: typeof post.excerpt === 'string' ? post.excerpt.replace(/\[object Object\]/g, '') : ''
+  };
+
+  return c.json(safePost);
 });
 
 // Get related posts
@@ -207,4 +227,30 @@ blogRouter.get('/categories', async (c) => {
       { id: 'dating', name: 'Dating', count: 34 }
     ]
   });
+});
+
+// Admin: purge KV cached combined blog data (protected by token)
+blogRouter.delete('/admin/cache/blog', async (c) => {
+  const token = c.req.query('token') || '';
+  const expected = (c.env as any)?.CACHE_PURGE_TOKEN || '';
+  if (!expected || token !== expected) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  try {
+    const VERSION =
+      (c.env as any)?.BLOG_DATA_VERSION ||
+      (c.env as any)?.WORKER_VERSION ||
+      'v1';
+    // Delete all versions for safety
+    const list = await c.env.CACHE.list({ prefix: 'blog-data-all:' as any } as any);
+    const keys = (list as any)?.keys || [];
+    for (const k of keys) {
+      await c.env.CACHE.delete(k.name);
+    }
+    // Also delete current explicit version
+    await c.env.CACHE.delete(`blog-data-all:${VERSION}`);
+    return c.json({ ok: true, deleted: keys.length + 1, version: VERSION });
+  } catch (e) {
+    return c.json({ ok: false, error: String(e) }, 500);
+  }
 });
