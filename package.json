@@ -7,6 +7,7 @@
     "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
+    "csv-parser": "^3.2.0",
     "xml2js": "^0.6.2"
   }
 }
