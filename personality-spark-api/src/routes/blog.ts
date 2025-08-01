@@ -1,7 +1,6 @@
 import { Hono } from 'hono';
 import { zValidator } from '@hono/zod-validator';
 import { z } from 'zod';
-import { marked } from 'marked';
 import type { Context } from '../types/env';
 
 export const blogRouter = new Hono<Context>();
@@ -151,13 +150,8 @@ blogRouter.get('/posts/:slug', async (c) => {
     return c.json({ error: 'Blog post not found' }, 404);
   }
   
-  // Convert markdown content to HTML
-  const postWithHtml = {
-    ...post,
-    content: post.content ? marked(post.content) : post.content
-  };
-  
-  return c.json(postWithHtml);
+  // Content is already HTML, no need to convert
+  return c.json(post);
 });
 
 // Get related posts
