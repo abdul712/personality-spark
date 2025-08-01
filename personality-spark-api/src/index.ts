@@ -26,6 +26,13 @@ import { logger as structuredLogger, Logger } from './utils/logger';
 
 const app = new Hono<Context>();
 
+// Cache control for static assets
+app.use('*.json', async (c, next) => {
+  await next();
+  // Set cache control to ensure fresh content
+  c.header('Cache-Control', 'public, max-age=300'); // 5 minutes cache
+});
+
 // Request ID middleware
 app.use('*', async (c, next) => {
   // Generate unique request ID
