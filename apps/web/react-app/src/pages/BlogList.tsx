@@ -38,7 +38,7 @@ const BlogList: React.FC = () => {
 
   const fetchBlogPosts = async () => {
     try {
-      const response = await fetch('/api/v1/blog/posts?limit=2000');
+      const response = await fetch('/api/v1/blog/posts?limit=3000');
       const data = await response.json();
       if (data.posts && data.posts.length > 0) {
         setAllPosts(data.posts);
