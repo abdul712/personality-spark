@@ -99,3 +99,72 @@
 ---
 **Last Updated**: 2025-01-18 (Batch 1 completed)  
 **Next Update**: After Batch 2 completion
+### signs-your-twin-flame-misses-you
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:20.106Z
+- **Issues**: Word count too low: 1544 (minimum: 2000)
+
+### signs-of-jealousy
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:31.603Z
+- **Issues**: Word count too low: 1472 (minimum: 2000)
+
+### signs-of-a-weak-man
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:32.704Z
+- **Issues**: Word count too low: 1491 (minimum: 2000)
+
+### signs-she-misses-you
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:40.555Z
+- **Issues**: Word count too low: 1477 (minimum: 2000)
+
+### signs-she-is-a-player
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:41.781Z
+- **Issues**: Word count too low: 1527 (minimum: 2000)
+
+### signs-of-a-twin-flame
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:42.736Z
+- **Issues**: Word count too low: 1530 (minimum: 2000)
+
+### twin-flame-union-signs
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:49.536Z
+- **Issues**: Word count too low: 1480 (minimum: 2000)
+
+### signs-he-doesnt-miss-you
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:50.585Z
+- **Issues**: Word count too low: 1518 (minimum: 2000)
+
+### twin-flame-angel-numbers
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:51.625Z
+- **Issues**: Word count too low: 1513 (minimum: 2000)
+
+### twin-flame-runner-signs
+- **Status**: completed
+- **Processed**: 2025-08-02T00:56:56.901Z
+- **Issues**: Word count too low: 1498 (minimum: 2000)
+
+### signs-of-emotional-maturity
+- **Status**: completed
+- **Processed**: 2025-08-02T01:18:35.395Z
+- **Issues**: Word count too low: 468 (minimum: 800), Missing required section: Introduction, Missing required section: Scientific Research, Missing required section: Practical Applications, Missing required section: Conclusion, Insufficient external links: 1 (minimum: 2)
+
+### signs-of-self-confidence
+- **Status**: completed
+- **Processed**: 2025-08-02T01:19:01.914Z
+- **Issues**: Word count too low: 555 (minimum: 800)
+
+### signs-of-low-self-esteem-in-a-partner
+- **Status**: completed
+- **Processed**: 2025-08-02T01:19:40.803Z
+- **Issues**: Word count too low: 720 (minimum: 800)
+
+### signs-someone-is-highly-intelligent
+- **Status**: completed
+- **Processed**: 2025-08-02T01:20:01.826Z
+- **Issues**: None
