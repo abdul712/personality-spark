@@ -2,8 +2,9 @@
 
 ## Overview
 Total Articles to Update: 2,535
-Articles Updated: 0
+Articles Updated: 6/2,535 (0.24% complete)
 Current Batch: 1/102 (25 articles per batch)
+Current Batch Progress: 6/25 (24% complete)
 
 ## Enhancement Standards
 - **Word Count**: 1,200-1,500 words per article
@@ -22,18 +23,15 @@ Current Batch: 1/102 (25 articles per batch)
 3. ✅ signs-a-man-is-serious-about-you.html - 2,603 words, relationship psychology, commitment research
 4. ✅ signs-a-leo-man-misses-you.html - 1,400 words, astrology focus, Leo personality traits
 5. ✅ signs-a-guy-wants-to-hold-your-hand.html - 1,400 words, body language psychology, physical intimacy
+6. ✅ signs-a-guy-likes-you-on-instagram.html - 2,543 words, social media psychology, digital attraction research
 
 ### Current Batch Articles:
 1. [✅] signs-a-man-lacks-ambition.html
-2. [✅] signs-a-man-is-using-you-for-money.html
+2. [✅] signs-a-man-is-using-you-for-money.html  
 3. [✅] signs-a-man-is-serious-about-you.html
 4. [✅] signs-a-leo-man-misses-you.html
 5. [✅] signs-a-guy-wants-to-hold-your-hand.html
-6. [ ] signs-a-guy-likes-you-on-instagram.html
-3. [ ] signs-a-man-is-serious-about-you.html
-4. [ ] signs-a-leo-man-misses-you.html
-5. [ ] signs-a-guy-wants-to-hold-your-hand.html
-6. [ ] signs-a-guy-likes-you-on-instagram.html
+6. [✅] signs-a-guy-likes-you-on-instagram.html
 7. [ ] signs-a-guy-is-using-you-emotionally.html
 8. [ ] signs-a-guy-is-not-attracted-to-you.html
 9. [ ] signs-a-guy-is-nervous-on-a-first-date.html
