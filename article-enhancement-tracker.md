@@ -21,13 +21,15 @@ Current Batch: 1/102 (25 articles per batch)
 2. ✅ signs-a-man-is-using-you-for-money.html - 1,498 words, financial abuse focus, authoritative sources
 3. ✅ signs-a-man-is-serious-about-you.html - 2,603 words, relationship psychology, commitment research
 4. ✅ signs-a-leo-man-misses-you.html - 1,400 words, astrology focus, Leo personality traits
+5. ✅ signs-a-guy-wants-to-hold-your-hand.html - 1,400 words, body language psychology, physical intimacy
 
 ### Current Batch Articles:
 1. [✅] signs-a-man-lacks-ambition.html
 2. [✅] signs-a-man-is-using-you-for-money.html
 3. [✅] signs-a-man-is-serious-about-you.html
 4. [✅] signs-a-leo-man-misses-you.html
-5. [ ] signs-a-guy-wants-to-hold-your-hand.html
+5. [✅] signs-a-guy-wants-to-hold-your-hand.html
+6. [ ] signs-a-guy-likes-you-on-instagram.html
 3. [ ] signs-a-man-is-serious-about-you.html
 4. [ ] signs-a-leo-man-misses-you.html
 5. [ ] signs-a-guy-wants-to-hold-your-hand.html
